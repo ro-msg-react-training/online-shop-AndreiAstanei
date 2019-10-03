@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import './Styles/Chapter3Style.css';
 import ProductDetails from './Products/ProductDetails';
 import ProductsListFromJSON from './products.json';
 import ProductList from './Products/ProductList';
