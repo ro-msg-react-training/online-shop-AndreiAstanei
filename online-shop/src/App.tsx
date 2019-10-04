@@ -1,11 +1,10 @@
 import React from 'react';
-import './App.scss';
 import './Styles/Chapter3Style.css';
 import ProductDetails from './Products/ProductDetails';
 import ProductsListFromJSON from './products.json';
 import ProductList from './Products/ProductList';
-//import './Styles/Chapter4Bulma/mystyles.scss';
 import './Styles/Chapter4Bulma/App.sass';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 export interface IProduct {
   id: number,
@@ -17,14 +16,20 @@ export interface IProduct {
 }
 
 const App: React.FC = () => {
-  const products : IProduct[] = Object.values(ProductsListFromJSON);
-  
+  const products: IProduct[] = Object.values(ProductsListFromJSON);
+
   return (
-    <div className="App">
-      <a className="button is-primary" href="https://bulma.io/">Bulma</a>
-      <ProductDetails data={products[0]}/>
-      <ProductList data={products}/>
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path="/" exact render = {() => <ProductList data={products}/>}/> {/* Folosim render in loc de component pentru props */}
+          <Route path="/ProductDetails" component={ProductDetails}/>
+        </Switch>
+
+        {/* <ProductDetails data={products[0]}/>
+      <ProductList data={products}/> */}
+      </div>
+    </Router>
   );
 }
 

@@ -16,6 +16,7 @@
   
   table {
     margin: auto;
+    align-items: center;
   }
   
   table td {

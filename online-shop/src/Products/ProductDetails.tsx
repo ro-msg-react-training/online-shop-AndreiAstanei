@@ -1,22 +1,27 @@
 import React from 'react';
 import { IProduct } from '../App';
+import { Link, useRouteMatch } from 'react-router-dom';
+import { render } from 'react-dom';
+
+let noImageFound: string = "http://noodleblvd.com/wp-content/uploads/2016/10/No-Image-Available.jpg";
 
 interface IProps {
-    data: IProduct;
+  data: IProduct;
 }
 
 export default class ProductDetails extends React.Component<IProps> {
-    render() {
-      return (
-        <div className="ProductDetailsStyle">
-          <h2 className="title">Product: {this.props.data.name}</h2>
-          <p>Name {this.props.data.name}</p>
-          <p>Category {this.props.data.category}</p>
-          <img src={this.props.data.image} alt={this.props.data.category + " " + this.props.data.id} />
-          <p>Price {this.props.data.price}</p>
-          <p>Description {this.props.data.description}</p>
-          <hr/>
-        </div>
-      );
-    }
+
+  render() {
+    return (
+      <div className="ProductDetailsStyle">
+        <h2 className="title">Product: </h2>
+        <p>Name </p>
+        <p>Category</p>
+        <img src={noImageFound} alt="" />
+        <p>Price </p>
+        <p>Description </p>
+        <hr />
+      </div>
+    );
   }
+}
