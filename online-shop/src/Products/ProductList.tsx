@@ -10,7 +10,7 @@ export default class ProductList extends React.Component<IProps> {
       let products = this.props.data.map(
       (product) => 
       <tr className="TableRow">
-        <td><img src={product.image} className="ProductsListImages"/></td>
+        <td><img src={product.image} className="ProductsListImages" alt={product.category + " " + product.id}/></td>
         <td>
           <p className="ProductName">{product.name}</p>
           <p className="ProductPrice">{product.price} lei</p>
