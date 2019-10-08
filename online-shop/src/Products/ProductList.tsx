@@ -11,7 +11,7 @@ export default class ProductList extends React.Component<IProps> {
   render() {
     let productsColumn = this.props.data.map(
       (product) =>
-        <Link to={`/ProductDetails/${product.id}`}>
+        <Link to={`/products/${product.id}`}>
           <div id='ProductsListElements' className='column box has-text-centered'>
             <img src={product.image} className="ProductsListImages" alt={product.category + " " + product.id} />
             <p className="is-size-5 has-text-dark has-text-weight-semibold">{product.name}</p>

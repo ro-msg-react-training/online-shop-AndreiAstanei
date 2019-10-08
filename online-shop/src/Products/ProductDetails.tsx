@@ -1,8 +1,7 @@
 import React from 'react';
 import { IProduct } from '../App';
 import '../Styles/ComponentsStyles/ProductDetails.scss';
-
-let noImageFound: string = "http://noodleblvd.com/wp-content/uploads/2016/10/No-Image-Available.jpg";
+import ProductsListFromJSON from '../products.json';
 
 interface IProps {
   data: IProduct;
@@ -11,42 +10,45 @@ interface IProps {
 
 export default class ProductDetails extends React.Component<IProps> {
   render() {
-    let productDetails = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nec porttitor justo, et vehicula nunc. Integer purus diam, eleifend a augue at, ullamcorper malesuada odio. Mauris libero orci, bibendum non tellus id, suscipit viverra tellus. Vestibulum eu convallis lectus, eget dictum nisl. Duis sed bibendum ex. Nullam ac velit quis mi imperdiet fermentum ut eget neque. Phasellus hendrerit sollicitudin velit et ultrices. Vivamus venenatis pharetra risus, et faucibus mauris ultricies non. Praesent dictum arcu ac elementum iaculis. Pellentesque luctus rhoncus leo non semper. Sed arcu metus, euismod et imperdiet eu, cursus eget urna. Donec sed efficitur lorem. Fusce id massa ligula." +
-    "Proin venenatis ut turpis sed commodo. Praesent suscipit malesuada consectetur. Nullam in molestie risus, sit amet finibus orci. Vestibulum ornare lacus a iaculis suscipit. Sed finibus eros sit amet risus placerat hendrerit. Curabitur ac auctor quam, non dignissim justo. Ut hendrerit diam nec erat sollicitudin lobortis. Curabitur et congue libero, a congue quam. Quisque semper sem ac ante rutrum, vitae vestibulum velit tincidunt. Pellentesque maximus urna enim, nec interdum arcu sollicitudin id. Pellentesque quis nibh vitae felis vehicula dapibus. Aenean venenatis id ipsum non commodo. Curabitur ut dignissim orci, a facilisis felis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus";
+    const products: IProduct[] = Object.values(ProductsListFromJSON);
+
+    const product: IProduct = products[this.props.match.params.id];
 
     return (
-      <div id="MainProductDetailsContainer" className='container box has-text-centered is-family-primary'>
+      <div id="MainProductDetailsConstainer" className='container box has-text-centered is-family-primary'>
         <div className='columns'>
           <div className='column'>
-            <img className='imageForProductDetails' src={noImageFound} alt="" />
+            <img className='imageForProductDetails' src={product.image} alt="" />
           </div>
         </div>
 
         <div className='columns'>
           <div className='column'>
-            <h1 className="title is-4">Product ID is: {this.props.match.params.id}</h1>
+            <h1 className="title is-4">{product.name}</h1>
           </div>
         </div>
 
-        <div className='columns'>
-          <div className='column'>
-          <span className='tag is-dark is-rounded is-medium has-text-weight-semibold'>
-              Laptops
+        <div className='columns is-centered'>
+          <div className="column tags  has-addons">
+            <span className="tag is-rounded is-medium has-text-weight-semibold">Category</span>
+            <span className='tag is-dark is-rounded is-medium has-text-weight-semibold'>
+              {product.category}
             </span>
           </div>
 
-          <div className='column'>
+          <div className="column tags has-addons">
+            <span className="tag is-rounded is-medium has-text-weight-semibold">Price</span>
             <span className='tag is-price-color is-rounded is-medium has-text-weight-semibold'>
-              1500 lei
+              {product.price} lei
             </span>
           </div>
         </div>
 
-        <hr/>
+        <hr />
 
         <div className='columns'>
           <div className='column'>
-            <textarea className='textarea has-fixed-size has-text-justified has-text-grey' readOnly rows={6} value={productDetails}/>
+            <textarea className='textarea has-fixed-size has-text-justified has-text-grey' readOnly rows={6} value={product.description} />
           </div>
         </div>
 

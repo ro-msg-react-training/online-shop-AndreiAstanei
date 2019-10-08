@@ -4,7 +4,7 @@ import ProductDetails from './Products/ProductDetails';
 import ProductsListFromJSON from './products.json';
 import ProductList from './Products/ProductList';
 import './Styles/Chapter4Bulma/App.sass';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 
 export interface IProduct {
@@ -23,8 +23,9 @@ const App: React.FC = (props) => {
     <Router>
       <div className="App">
         <Switch>
-          <Route path="/" exact render = {() => <ProductList data={products}/>}/> {/* Folosim render in loc de component pentru props */}
-          <Route path="/ProductDetails/:id" exact component={ProductDetails}/>
+          <Redirect exact from='/' to='/products' />
+          <Route path="/products" exact render = {() => <ProductList data={products}/>}/> {/* Folosim render in loc de component pentru props */}
+          <Route path="/products/:id" exact component={ProductDetails}/>
         </Switch>
       </div>
     </Router>
