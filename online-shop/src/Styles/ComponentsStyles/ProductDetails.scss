@@ -1,0 +1,16 @@
+@charset "utf-8";
+
+.imageForProductDetails {
+    width: 450px;
+    height: 280px;
+
+    object-fit: contain;
+  }
+
+#MainProductDetailsContainer {
+  margin-top: 0.66rem;
+}
+
+@import '../Chapter4Bulma/App.sass';
+
+

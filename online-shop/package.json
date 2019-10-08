@@ -19,9 +19,7 @@
     "start": "react-scripts start && npm run css-watch",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "css-build": "node-sass --omit-source-map-url online-shop/src/Styles/Chapter4Bulma/mystyles.scss online-shop/src/Styles/Chapter4Bulma/mystyles.css",
-    "css-watch": "npm run css-build -- --watch"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
