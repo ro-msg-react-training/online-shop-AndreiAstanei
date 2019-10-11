@@ -24,10 +24,10 @@ export default class ConfirmationModal extends React.Component<IProps, IState> {
         }
     }
 
-    handleDeleteProductClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const DeleteProductApiEndpoint = `http://localhost:4000/products/${this.props.ProductId}`;
+    handleDeleteProductClick = () => {
+        const deleteProductApiEndpoint = `http://localhost:4000/products/${this.props.ProductId}`;
 
-        fetch(DeleteProductApiEndpoint, { method: 'DELETE', signal: this.abortController.signal })
+        fetch(deleteProductApiEndpoint, { method: 'DELETE', signal: this.abortController.signal })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Encountered a problem when deleting the product.');

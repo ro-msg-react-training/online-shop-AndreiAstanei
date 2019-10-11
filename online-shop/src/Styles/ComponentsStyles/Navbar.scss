@@ -4,4 +4,8 @@ img {
     object-fit: cover;
 }
 
-@import '../Chapter4Bulma/App.sass';
+#navBarProductsButton {
+    margin-right: 5px;
+}
+
+@import './App.sass';

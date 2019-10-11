@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../Styles/ComponentsStyles/ProductList.scss';
-import { IProduct } from '../App';
-import { ProductsImages as ProductImages } from './ProductList';
+import '../Styles/ComponentsStyles/ShoppingCartStyles.scss';
+import { IProduct } from '../Models/Models';
+import { ProductsImages as ProductImages } from '../Models/Models';
 
 interface IProps {
   match?: any;
   productsToBeAddedToShoppingCartFromApp: IProduct[];
+  decreaseProductQuantityFromShoppingCart : any;
+  completlyRemoveProductFromShoppingCart : any;
 }
 
 interface IState {
@@ -20,20 +22,18 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
     this.state = {
       addedProductsForCheckout: this.props.productsToBeAddedToShoppingCartFromApp
     }
-
-    console.log("Received items: " + this.state.addedProductsForCheckout);
   }
 
+  //In main array
   calculateNumberOfSameItem(productId: number): number {
     let numberOfSameProduct = 0;
 
-    this.state.addedProductsForCheckout.map(
+    this.state.addedProductsForCheckout.forEach(
       (product) => {
         if (product.id === productId) {
           numberOfSameProduct++
         }
-      }
-    );
+      });
 
     return numberOfSameProduct;
   }
@@ -44,7 +44,7 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
       return totalPrice;
     }
 
-    this.state.addedProductsForCheckout.map(
+    this.state.addedProductsForCheckout.forEach(
       (product) => {
         totalPrice += product.price
       }
@@ -53,41 +53,77 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
     return totalPrice;
   }
 
-  /* 
-    <div id={'Product' + product.id} className='column box has-text-centered ProductsListElements'>
-          <img src={ProductImages[product.id].imageUrl} className="ProductsListImages" alt={product.category + " " + product.id} />
-          <p className="is-size-5 has-text-grey-dark has-text-weight-semibold">{product.name} x {this.calculateNumberOfSameItem(product.id)}</p>
-          <p className="is-size-5 has-text-price-color has-text-weight-semibold">{product.price} lei</p>
-          <p className="is-size-7 has-text-grey">In {product.category}</p>
-        </div>
-  */
+  removeDuplicatesFromMainArray(arrayToParse: IProduct[]): IProduct[] {
+    const unique: IProduct[] = [];
+
+    //pentru fiecare element din state
+    arrayToParse.forEach((product) => {
+
+      let flagProductAlreadyExists: boolean = true;
+
+      //verificam daca este in unique, in cazul in care unique are macar 1 element
+      if (unique.length) {
+        unique.forEach((uniqueProduct) => {
+          if (product.id === uniqueProduct.id) {
+            flagProductAlreadyExists = false;
+          }
+        });
+      }
+
+      if (flagProductAlreadyExists) {
+        unique.push(product);
+      }
+    });
+
+    return unique;
+  }
+
+  onDecreaseProductQuantity = (productID : number) : any => {
+    console.log("Hey look!, the decrease button was pressed :)");
+
+    if(this.calculateNumberOfSameItem(productID) >= 1) {
+      this.props.decreaseProductQuantityFromShoppingCart(productID);
+    }
+  }
+
+  onDeleteProductPressed = (productID : number) : any => {
+    this.props.completlyRemoveProductFromShoppingCart(productID);
+  }
 
   render() {
-    let product = this.state.addedProductsForCheckout.map(
+    const duplicatesFreeArray: IProduct[] = this.removeDuplicatesFromMainArray(this.state.addedProductsForCheckout);
+
+    let product = duplicatesFreeArray.map(
       (product: IProduct) =>
-        <tr className="tr">
-          <td className="td">
-            <img src={ProductImages[product.id].imageUrl} className="ProductsListImages" alt={product.category + " " + product.id} />
-          </td>
-          <td className="td">
-            <p className="is-size-5 has-text-grey-dark has-text-weight-semibold">{product.name}</p>
-            <p className="is-size-5 has-text-price-color has-text-weight-semibold">{product.price} lei</p>
+        <div key={product.id + "Key"} className="columns box is-vcentered has-text-centered">
+          <div className="column">
+            <img src={ProductImages[product.id].imageUrl} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
+          </div>
+          <div className="column">
+            <p className="is-size-6 has-text-grey-dark has-text-weight-semibold">{product.name}</p>
+            <p className="is-size-6 has-text-price-color has-text-weight-semibold">{this.calculateNumberOfSameItem(product.id) * product.price} lei</p>
             <p className="is-size-7 has-text-grey">In {product.category}</p>
-          </td>
-          <td className="td">
-            Hey
-            </td>
-        </tr>
+          </div>
+          <div className="column">
+            <p className="is-size-6 has-text-grey has-text-weight-semibold">Quantity</p>
+            <div className="columns is-gapless">
+              <div className="column"><button className="button is-small is-danger is-outlined has-text-weight-bold" onClick = {this.onDecreaseProductQuantity.bind(this, product.id)}>-</button></div>
+              <div className="column"><p className="is-vcentered has-text-weight-semibold is-size-6">{this.calculateNumberOfSameItem(product.id)}</p></div>
+              <div className="column"><button className="button is-small is-danger is-outlined has-text-weight-bold">+</button></div>
+            </div>
+            <button className="button is-danger" onClick = {this.onDeleteProductPressed.bind(this, product.id)}>Delete product</button>
+          </div>
+        </div>
     );
 
     return (
       <div className="container is-fluid">
         <div className='level'>
           <div className='level-item level-left'>
-            <p className="title">Products in cart: {this.state.addedProductsForCheckout.length}</p>
+            <p className="title has-text-grey-dark has-text-weight-light">Products in cart: {this.state.addedProductsForCheckout.length}</p>
           </div>
           <div className='level-item level-right'>
-            <p className="title">Total: {this.calculateTotalPrice()} lei</p>
+            <p className="title has-text-grey-dark has-text-weight-light">Total: {this.calculateTotalPrice()} lei</p>
             <button className="button is-primary is-medium is-outlined">
               <span className="icon">
                 <i className="fas fa-cart-arrow-down" />
@@ -96,13 +132,14 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
             </button>
           </div>
         </div>
-
-
-        <table className='table'>
-          <div className="tbody">
-            {product}
+        <hr />
+        <div className="level">
+          <div className="level-item">
+            <div>
+              {product}
+            </div>
           </div>
-        </table>
+        </div>
       </div>
     );
   }

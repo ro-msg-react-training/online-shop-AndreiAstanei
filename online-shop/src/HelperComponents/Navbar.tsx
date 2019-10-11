@@ -12,21 +12,29 @@ export default class Navbar extends React.Component<IProps, IState> {
                 <div className="navbar-brand">
                     <Link to="/">
                         <div className="navbar-item">
-                            <img src="https://www.msg-systems.ro/images/msg_og_logo.png" width="112" height="28" />
+                            <img src="https://www.msg-systems.ro/images/msg_og_logo.png" alt="" width="112" height="28" />
                         </div>
                     </Link>
 
-                    <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <div role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>
-                    </a>
+                    </div>
                 </div>
 
                 <div id="navbarBasicExample" className="navbar-menu">
                     <div className="navbar-end">
                         <div className="navbar-item">
                             <div className="buttons">
+                            <Link to="/products">
+                                    <button id="navBarProductsButton" className="button is-primary">
+                                        <span className="icon">
+                                            <i className="fas fa-store-alt" />
+                                        </span>
+                                        <span>Products</span>
+                                    </button>
+                                </Link>
                                 <Link to="/shoppingCart">
                                     <button className="button is-primary">
                                         <span className="icon">
