@@ -7,12 +7,12 @@
     object-fit: contain;
   }
 
-  .ProductsListElements {
-    margin: 0.25rem;
+.ShoppingCartProducts {
+    margin-bottom: 1.25rem;
 }
 
-#MainProductDetailsContainer {
-  margin-top: 0.66rem;
+#shoppingCartPriceTag {
+  margin-right: 10px;
 }
 
 @import './App.sass';

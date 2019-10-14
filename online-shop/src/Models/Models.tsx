@@ -66,3 +66,8 @@ export const ProductsImages: CustomProductImage[] = [
     { productId: 49, imageUrl: "https://sapui5.hana.ondemand.com/test-resources/sap/ui/documentation/sdk/images/HT-1102.jpg" },
     { productId: 50, imageUrl: "https://sapui5.hana.ondemand.com/test-resources/sap/ui/documentation/sdk/images/HT-1103.jpg" }
 ];
+
+export interface CheckoutArrayItem {
+    productId: number,
+    quantity: number
+}

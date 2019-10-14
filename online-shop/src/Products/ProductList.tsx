@@ -6,6 +6,7 @@ import { ProductsImages } from '../Models/Models';
 
 interface IProps {
   match: any;
+  resetShoppingCartState: any;
 }
 
 interface IState {
@@ -31,6 +32,7 @@ export default class ProductList extends React.Component<IProps, IState> {
     fetch(ProductsApiEndpointUrl, { method: 'GET' })
       .then(response => response.json())
       .then(result => this.setState({ data: result, isLoading: false }))
+      .then(this.props.resetShoppingCartState())
       .catch(error => this.setState({ error: error, isLoading: false }));
   }
 

@@ -7,6 +7,7 @@ interface IProps {
     ProductId: number;
     show: boolean;
     showModalFunction: any;
+    completelyRemoveProductFromStore : any;
 }
 
 interface IState {
@@ -44,7 +45,10 @@ export default class ConfirmationModal extends React.Component<IProps, IState> {
                 this.setState({
                     shouldRedirect: true
                 });
-            });
+            })
+            .then(
+                this.props.completelyRemoveProductFromStore(this.props.ProductId)
+            );
     }
 
     componentWillUnmount() {

@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom';
 interface IProps {
   match?: any;
   addProductToShoppingCartFunction : any;
+  completelyRemoveProductFromStore : any;
 }
 
 interface IState {
@@ -151,7 +152,7 @@ export default class ProductDetails extends React.Component<IProps, IState> {
             </button>
           </div>
         </div>
-        <ConfirmationModal ProductId={toBeReceivedData.id} show={isDeleteModalOpen} showModalFunction={this.handleModalShow.bind(this)} />
+        <ConfirmationModal ProductId={toBeReceivedData.id} show={isDeleteModalOpen} showModalFunction={this.handleModalShow.bind(this)} completelyRemoveProductFromStore={this.props.completelyRemoveProductFromStore} />
       </div>
     );
   }
