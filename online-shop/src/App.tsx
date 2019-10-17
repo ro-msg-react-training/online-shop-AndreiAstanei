@@ -1,10 +1,10 @@
 import React from 'react';
 import './Styles/Chapter3Style.css';
-import ProductDetails from './Products/ProductDetails';
-import ProductList from './Products/ProductList';
+import ProductDetails from './Components/ProductDetails';
+import ProductList from './Components/ProductList';
 import './Styles/ComponentsStyles/App.sass';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import ShoppingCart from './Products/ShoppingCart';
+import ShoppingCart from './Components/ShoppingCart';
 import Navbar from './HelperComponents/Navbar';
 import './App.scss';
 import { IProduct, CheckoutArrayItem } from './Models/Models';
@@ -182,7 +182,7 @@ export default class App extends React.Component<IProps, IState> {
           <Navbar />
           <Switch>
             <Redirect exact from='/' to='/products' />
-            <Route path="/products" exact render = {(props) => <ProductList {...props} resetShoppingCartState = {this.resetShoppingCartState.bind(this)}/>}/> {/*component={ProductList} />  Folosim render in loc de component pentru props */}
+            <Route path="/products" exact render = {(props) => <ProductList {...props} resetShoppingCartState = {this.resetShoppingCartState.bind(this)}/>}/>
             <Route path="/products/:id" exact render={(props) => <ProductDetails {...props} addProductToShoppingCartFunction={this.addProductToCart.bind(this)} completelyRemoveProductFromStore={this.completelyRemoveProductFromStore.bind(this)} />} />
             <Route path="/shoppingCart" exact render={() => <ShoppingCart productsToBeAddedToShoppingCartFromApp={this.state.productsInShoppingCart} decreaseProductQuantityFromShoppingCart={this.decreaseProductQuantityFromShoppingCart.bind(this)} calculateNumberOfSameItem={this.calculateNumberOfSameItem.bind(this)} calculateTotalPrice={this.calculateTotalPrice.bind(this)} uniqueProductsInShoppingCart={this.state.uniqueProductsInShoppingCart} decreaseProductQuantity={this.decreaseProductQuantity.bind(this)} completelyRemoveProductFromStore={this.completelyRemoveProductFromStore.bind(this)} addProductToCart={this.addProductToCart.bind(this)} checkoutShoppingCart={this.checkoutShoppingCart.bind(this)} checkoutActionStatus={this.state.checkoutActionStatus} />} />
           </Switch>
