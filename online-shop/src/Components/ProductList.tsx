@@ -65,7 +65,6 @@ class ProductList extends React.Component<ProductListProps> {
 
     return (
       <div className="container is-fluid">
-        
         <div className='columns is-multiline is-mobile is-centered'>
           {productsColumn}
         </div>

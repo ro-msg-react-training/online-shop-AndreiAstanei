@@ -55,8 +55,8 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
   render() {
     let product = this.state.shoppingCartUniqueItemsArray.map(
       (product: IProduct) =>
-      <div className = "ShoppingCartProducts">
-        <div key={product.id + "Key"} className="columns box is-vcentered has-text-centered">
+      <div key={product.id + "Key"} className = "ShoppingCartProducts">
+        <div className="columns box is-vcentered has-text-centered">
           <div className="column">
             <Link to={`/products/${product.id}`}>
               <img src={ProductImages[product.id].imageUrl} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
@@ -79,7 +79,7 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
             <button className="button is-danger" onClick={this.onDeleteProductPressed.bind(this, product.id)}>Delete product</button>
           </div>
         </div>
-        </div>
+      </div>
     );
 
     if (this.props.checkoutActionStatus === 0) {

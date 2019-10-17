@@ -124,7 +124,7 @@ export default class App extends React.Component<IProps, IState> {
 
   // *** METHODS FOR SHOPPING CART *** END
   //Removing product from shopping cart
-  completelyRemoveProductFromStore = (productID: number): any => {
+  completelyRemoveProductFromStore = (productID: number) => {
     while (this.calculateNumberOfSameItem(productID)) {
       this.decreaseProductQuantity(productID);
     }
