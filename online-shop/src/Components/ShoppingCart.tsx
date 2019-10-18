@@ -3,33 +3,44 @@ import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ShoppingCartStyles.scss';
 import { IProduct } from '../Models/Models';
 import { ProductsImages as ProductImages } from '../Models/Models';
+import { AppState } from '../ReduxStore';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { addProductToCart } from '../ReduxStore/ShoppingCartSection/actions';
 
-interface IProps {
+interface ShoppingCartProps {
   match?: any;
-  productsToBeAddedToShoppingCartFromApp: IProduct[];
-  decreaseProductQuantityFromShoppingCart: any;
-  calculateNumberOfSameItem: any;
-  calculateTotalPrice: any;
-  uniqueProductsInShoppingCart: IProduct[];
-  decreaseProductQuantity: any;
-  completelyRemoveProductFromStore: any;
-  addProductToCart: any;
-  checkoutShoppingCart: any;
-  checkoutActionStatus: number;
-}
-
-interface IState {
-  addedProductsForCheckout: IProduct[];
   shoppingCartUniqueItemsArray: IProduct[];
+
+  decreaseProductQuantity: (productID: number) => void;
+  completelyRemoveProductFromStore: (productID : number) => void;
+  calculateNumberOfSameItem: (productId: number) => number;
+  calculateTotalPrice: () => void;
+  checkoutShoppingCart: () => void;
+
+  //Din store
+  productsInShoppingCart : IProduct[];
+  checkoutActionStatus: number;
+  addProductToCart: (updatedProductsInShoppingCart : IProduct, updatedCheckoutStatus : number) => void;
 }
 
-export default class ShoppingCart extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
+interface AdditionalShoppingCartState {
+  match?: any;
+  shoppingCartUniqueItemsArray: IProduct[];
+
+  decreaseProductQuantity: (productID: number) => void;
+  completelyRemoveProductFromStore: (productID : number) => void;
+  calculateNumberOfSameItem: (productId: number) => number;
+  calculateTotalPrice: () => void;
+  checkoutShoppingCart: () => void;
+}
+
+class ShoppingCart extends React.Component<ShoppingCartProps> {
+  constructor(props: ShoppingCartProps) {
     super(props);
 
     this.state = {
-      addedProductsForCheckout: this.props.productsToBeAddedToShoppingCartFromApp,
-      shoppingCartUniqueItemsArray: this.props.uniqueProductsInShoppingCart
+      shoppingCartUniqueItemsArray: this.props.shoppingCartUniqueItemsArray
     }
   }
 
@@ -45,7 +56,7 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
   }
 
   onIncreaseProductQuantity = (product: IProduct): any => {
-    this.props.addProductToCart(product);
+    this.props.addProductToCart(product, 0);
   }
 
   onCheckoutClicked() {
@@ -53,7 +64,7 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
   }
 
   render() {
-    let product = this.state.shoppingCartUniqueItemsArray.map(
+    let product = this.props.shoppingCartUniqueItemsArray.map(
       (product: IProduct) =>
       <div key={product.id + "Key"} className = "ShoppingCartProducts">
         <div className="columns box is-vcentered has-text-centered">
@@ -87,7 +98,7 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
         <div className="container is-fluid">
           <div className='level'>
             <div className='level-item level-left'>
-              <p className="title has-text-grey-dark has-text-weight-light">Products in cart: {this.props.productsToBeAddedToShoppingCartFromApp.length}</p>
+              <p className="title has-text-grey-dark has-text-weight-light">Products in cart: {this.props.productsInShoppingCart.length}</p>
             </div>
             <div className='level-item level-right'>
               <p id = "shoppingCartPriceTag" className="title has-text-grey-dark has-text-weight-light">Total: {this.props.calculateTotalPrice()} lei</p>
@@ -135,3 +146,29 @@ export default class ShoppingCart extends React.Component<IProps, IState> {
     }
   }
 }
+
+const mapStateToProps = (state : AppState, additionalState : AdditionalShoppingCartState) => ({
+  match: additionalState.match,
+  shoppingCartUniqueItemsArray: additionalState.shoppingCartUniqueItemsArray,
+
+  decreaseProductQuantity: additionalState.decreaseProductQuantity,
+  completelyRemoveProductFromStore: additionalState.completelyRemoveProductFromStore,
+  calculateNumberOfSameItem: additionalState.calculateNumberOfSameItem,
+  calculateTotalPrice: additionalState.calculateTotalPrice,
+  checkoutShoppingCart: additionalState.checkoutShoppingCart,
+
+  //Din store
+  productsInShoppingCart : state.cartReducer.productsInShoppingCart,
+  checkoutActionStatus: state.cartReducer.checkoutActionStatus
+});
+
+const mapDispatchToProps = (dispatch : Dispatch) => ({
+  addProductToCart: (updatedProductsInShoppingCart : IProduct, updatedCheckoutStatus : number) => dispatch(addProductToCart(updatedProductsInShoppingCart,updatedCheckoutStatus ))
+});
+
+const ShoppingCartInitializer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShoppingCart);
+
+export default ShoppingCartInitializer;

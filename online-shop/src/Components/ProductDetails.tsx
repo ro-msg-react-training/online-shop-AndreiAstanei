@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, DetailedHTMLProps, ButtonHTMLAttributes } from 'react';
+import React from 'react';
 import { IProduct } from '../Models/Models';
 import '../Styles/ComponentsStyles/ProductDetails.scss';
 import ConfirmationModal from '../HelperComponents/ConfirmationModal';
