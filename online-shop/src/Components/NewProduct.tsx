@@ -3,14 +3,16 @@ import '../Styles/ComponentsStyles/ProductDetails.scss';
 import { AppState } from '../ReduxStore';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IProduct } from '../Models/Models';
+import { IProduct, ProductsImages, CustomProductImage } from '../Models/Models';
 import { Dispatch } from 'redux';
 import { createNewProduct } from '../ReduxStore/NewProductSection/actions';
+import { addNewEntryToArray } from '../ReduxStore/AppComponentSection/actions';
 
 interface NewProductProps {
     match: any;
     createProductServerResponse: number;
     createNewProduct: (serverResponse: number) => void;
+    addNewEntryToArray: (newItem : CustomProductImage) => void;
 }
 
 interface AdditionalNewProductState {
@@ -20,9 +22,9 @@ interface AdditionalNewProductState {
 class NewProduct extends React.Component<NewProductProps> {
     productId: number = 0;
     productTitle: string = "";
-    productCategory: string = "";
+    productCategory: string = "Laptops";
     productPrice: number = 0;
-    productImage: string = "";
+    productImage: string = "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png";
     productDescription: string = "";
 
     onTitleChange = (e: SyntheticEvent) => {
@@ -80,7 +82,7 @@ class NewProduct extends React.Component<NewProductProps> {
         if (this.areNewFormValuesOk()) {
             let serverResponse: number = 0;
 
-            const updatedProduct: IProduct = {
+            const newProduct: IProduct = {
                 id: this.productId,
                 name: this.productTitle,
                 category: this.productCategory,
@@ -90,13 +92,13 @@ class NewProduct extends React.Component<NewProductProps> {
             };
 
             const apiEndpoint = "http://localhost:4000/products";
-            console.log(JSON.stringify(updatedProduct));
+            console.log(JSON.stringify(newProduct));
 
             fetch(apiEndpoint, {
                 headers: {
                     'Content-Type': 'application/json; chartset=UTF-8',
                     'Accept': 'application/json'
-                }, method: 'PUT', body: JSON.stringify(updatedProduct)
+                }, method: 'POST', body: JSON.stringify(newProduct)
             })
                 .then(response => {
                     if(response.status === 200) {
@@ -111,6 +113,7 @@ class NewProduct extends React.Component<NewProductProps> {
                 })
                 .finally(() => {
                     this.props.createNewProduct(serverResponse);
+                    this.props.addNewEntryToArray({productId : this.productId, imageUrl : this.productImage});
                 });
         }
     }
@@ -123,7 +126,8 @@ class NewProduct extends React.Component<NewProductProps> {
             })
             .catch(error => {
                 console.log("Error found: " + error);
-            });
+            })
+            .finally(() => this.props.createNewProduct(0));
     }
 
     render() {
@@ -177,7 +181,7 @@ class NewProduct extends React.Component<NewProductProps> {
                     <div className="field">
                         <label className="label has-text-primary">Product Image</label>
                         <div className="control">
-                            <input className="input" type="text" placeholder="Enter an image for product" onChange={this.onImageChange} />
+                            <input className="input" type="text" placeholder="https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png" onChange={this.onImageChange} />
                         </div>
                     </div>
 
@@ -243,7 +247,8 @@ const mapStateToProps = (state: AppState, additionalState: AdditionalNewProductS
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    createNewProduct: (serverResponse: number) => dispatch(createNewProduct(serverResponse))
+    createNewProduct: (serverResponse: number) => dispatch(createNewProduct(serverResponse)),
+    addNewEntryToArray: (newItem : CustomProductImage) => dispatch(addNewEntryToArray(newItem))
 });
 
 const NewProductInitializer = connect(

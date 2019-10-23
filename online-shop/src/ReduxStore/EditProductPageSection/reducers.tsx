@@ -35,6 +35,16 @@ export function editProductPageReducer(state: EPTypes.EditProductPageState = ini
             };
         }
 
+        case EPTypes.INITIAL_PRPODUCT_DETAILS_LOAD: {
+            const currentAction : EPTypes.EPInitialLoadAction = action as EPTypes.EPInitialLoadAction;
+
+            return {
+                productInEditStage : state.productInEditStage,
+                isLoading : true,
+                submitChangesResponse : state.submitChangesResponse
+            };
+        }
+
         default:
             return state;
     }

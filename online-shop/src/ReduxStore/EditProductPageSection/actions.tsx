@@ -15,3 +15,9 @@ export function editProduct(productDetails: IProduct, serverResponse : number): 
         submitChangesResponse: serverResponse
     };
 }
+
+export function initialProductDetailsLoad() : EPTypes.EditProductPageActionTypes {
+    return {
+        type : EPTypes.INITIAL_PRPODUCT_DETAILS_LOAD
+    };
+}

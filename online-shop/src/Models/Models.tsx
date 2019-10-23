@@ -13,7 +13,7 @@ export interface CustomProductImage {
 }
 
 // Array pentru imagini
-export const ProductsImages: CustomProductImage[] = [
+export let ProductsImages: CustomProductImage[] = [
     { productId: 0, imageUrl: "https://sapui5.hana.ondemand.com/test-resources/sap/ui/documentation/sdk/images/HT-1000.jpg" },
     { productId: 1, imageUrl: "https://sapui5.hana.ondemand.com/test-resources/sap/ui/documentation/sdk/images/HT-1001.jpg" },
     { productId: 2, imageUrl: "https://sapui5.hana.ondemand.com/test-resources/sap/ui/documentation/sdk/images/HT-1002.jpg" },

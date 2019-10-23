@@ -8,27 +8,9 @@ import ShoppingCart from './Components/ShoppingCart';
 import EditProductPage from './Components/EditProductPage';
 import Navbar from './HelperComponents/Navbar';
 import './App.scss';
-import { IProduct } from './Models/Models';
 import NewProductInitializer from './Components/NewProduct';
 
-interface IProps { }
-interface IState {
-  productsInShoppingCart: IProduct[];
-  uniqueProductsInShoppingCart: IProduct[];
-  checkoutActionStatus: number;
-}
-
-export default class App extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      productsInShoppingCart: [],
-      uniqueProductsInShoppingCart: [],
-      checkoutActionStatus: 0
-    }
-  }
-
+export default class App extends React.Component {
   render() {
     return (
       <Router>

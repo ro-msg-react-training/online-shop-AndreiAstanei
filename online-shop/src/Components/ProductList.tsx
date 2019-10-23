@@ -1,5 +1,5 @@
 import React from 'react';
-import { IProduct } from '../Models/Models';
+import { IProduct, CustomProductImage } from '../Models/Models';
 import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ProductList.scss';
 import { ProductsImages } from '../Models/Models';
@@ -20,6 +20,7 @@ interface ProductListProps {
   resetShoppingCart: () => void;
   productDeletionRedirectStatus: boolean;
   activateModalRedirectToProducts: () => void;
+  secondaryProductImagesArray : CustomProductImage[];
 }
 
 interface AdditionalComponentState {
@@ -55,6 +56,20 @@ class ProductList extends React.Component<ProductListProps> {
       .then(() => this.props.loadProducts(fetchedList, loadingStatus, errorMessage));
   }
 
+  getCorrespondingImageForProduct = (id : number) : string => {
+    let defaultValue : string = "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png";
+
+    for(let i : number = this.props.secondaryProductImagesArray.length - 1; i >= 0; i--) {
+      let product : CustomProductImage = this.props.secondaryProductImagesArray[i];
+
+      if(product.productId === id) {
+        defaultValue = product.imageUrl;
+      }
+    }
+
+    return defaultValue;
+  }
+
   render() {
     if (this.props.isLoading && this.props.error === 'No errors found') {
       return <p>Loading ....</p>
@@ -63,16 +78,16 @@ class ProductList extends React.Component<ProductListProps> {
     }
 
     let productsColumn = this.props.productList.map(
-      (product: IProduct) =>
+      (product: IProduct) => 
         <Link key={'ProductLinkKey' + product.id} to={`${this.props.match.url}/${product.id}`}>
           <div id={'Product' + product.id} className='column box has-text-centered ProductsListElements'>
-            <img src={ProductsImages[product.id].imageUrl} className="ProductsListImages" alt={product.category + " " + product.id} />
+            <img src={this.getCorrespondingImageForProduct(product.id)} className="ProductsListImages" alt={product.category + " " + product.id} />
             <p className="is-size-5 has-text-grey-dark has-text-weight-semibold appliedEllipsisEffect">{product.name}</p>
             <p className="is-size-5 has-text-price-color has-text-weight-semibold appliedEllipsisEffect">{product.price} lei</p>
             <p className="is-size-7 has-text-grey appliedEllipsisEffect">In {product.category}</p>
           </div>
         </Link>
-    );
+      );
 
     return (
       <div className="container is-fluid is-clearfix">
@@ -93,7 +108,8 @@ const mapStateToProps = (state: AppState, myOwnState: AdditionalComponentState) 
   error: state.prodListReducer.error,
   match: myOwnState.match,
   shoppingCartStatus: state.cartReducer.checkoutActionStatus,
-  productDeletionRedirectStatus: state.prodDetailsReducer.shouldRedirectFromModalDelete
+  productDeletionRedirectStatus: state.prodDetailsReducer.shouldRedirectFromModalDelete,
+  secondaryProductImagesArray: state.appReducer.secondaryProductImagesArray
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -19,8 +19,8 @@ export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialSt
                 productsInShoppingCart: addedProductsToArray,
                 uniqueProductsInShoppingCart: removeDuplicatesFromMainArray(state, addedProductsToArray),
                 checkoutActionStatus: state.checkoutActionStatus,
-                numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(state.productsInShoppingCart),
-                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(state.productsInShoppingCart)
+                numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(addedProductsToArray),
+                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(addedProductsToArray)
             };
         }
 

@@ -4,7 +4,7 @@ import { AppState } from '../ReduxStore';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IProduct } from '../Models/Models';
-import { loadProductData, editProduct } from '../ReduxStore/EditProductPageSection/actions';
+import { loadProductData, editProduct, initialProductDetailsLoad } from '../ReduxStore/EditProductPageSection/actions';
 import { Dispatch } from 'redux';
 
 interface EditProductPageProps {
@@ -14,6 +14,7 @@ interface EditProductPageProps {
     loadProductData: (product: IProduct) => void;
     editProduct: (product: IProduct, serverResponse: number) => void;
     match: any;
+    initialProductDetailsLoad: () => void;
 }
 
 interface AdditionalEditProductPageState {
@@ -132,6 +133,8 @@ class EditProductPage extends React.Component<EditProductPageProps> {
     }
 
     componentDidMount() {
+        this.props.initialProductDetailsLoad();
+
         const ProductDetailsApiEndpoint = "http://localhost:4000/products/" + this.props.match.params.id;
 
         let receivedProductData: IProduct = {} as any;
@@ -151,12 +154,12 @@ class EditProductPage extends React.Component<EditProductPageProps> {
                 console.log("This is the error: " + error);
             })
             .finally(() => {
-                this.props.loadProductData(receivedProductData);
                 this.productTitle = receivedProductData.name;
                 this.productCategory = receivedProductData.category;
                 this.productPrice = receivedProductData.price;
                 this.productImage = receivedProductData.image;
                 this.productDescription = receivedProductData.description;
+                this.props.loadProductData(receivedProductData);
             });
     }
 
@@ -287,7 +290,8 @@ const mapStateToProps = (state: AppState, additionalState: AdditionalEditProduct
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     loadProductData: (product: IProduct) => dispatch(loadProductData(product)),
-    editProduct: (product: IProduct, serverResponse: number) => dispatch(editProduct(product, serverResponse))
+    editProduct: (product: IProduct, serverResponse: number) => dispatch(editProduct(product, serverResponse)),
+    initialProductDetailsLoad: () => dispatch(initialProductDetailsLoad())
 });
 
 const EditProductPageInitializer = connect(

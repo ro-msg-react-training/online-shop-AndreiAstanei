@@ -9,6 +9,8 @@ import { EditProductPageState } from './EditProductPageSection/types';
 import { editProductPageReducer } from './EditProductPageSection/reducers';
 import { NewProductState } from './NewProductSection/types';
 import { newProductReducer } from "./NewProductSection/reducers";
+import { AppComponentState } from './AppComponentSection/types';
+import { appComponentReducer } from './AppComponentSection/reducers';
 
 export interface AppState {
     prodListReducer : ProductListState;
@@ -16,6 +18,7 @@ export interface AppState {
     cartReducer : ShoppingCartState;
     editProductReducer : EditProductPageState;
     newProdReducer : NewProductState;
+    appReducer : AppComponentState;
 }
 
 const rootReducer = combineReducers({
@@ -23,7 +26,8 @@ const rootReducer = combineReducers({
     prodDetailsReducer : productDetailsReducer,
     cartReducer : shoppingCartReducer,
     editProductReducer : editProductPageReducer,
-    newProdReducer : newProductReducer
+    newProdReducer : newProductReducer,
+    appReducer : appComponentReducer
 });
 
 export function configureStore() {
