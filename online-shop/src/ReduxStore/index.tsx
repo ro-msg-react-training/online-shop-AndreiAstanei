@@ -3,20 +3,27 @@ import { productListReducer } from './ProductListSection/reducers';
 import { ProductListState } from './ProductListSection/types';
 import { productDetailsReducer } from './ProductDetailsSection/reducers';
 import { ProductDetailsState } from './ProductDetailsSection/types';
-import * as serviceWorker from '../serviceWorker';
 import { ShoppingCartState } from './ShoppingCartSection/types';
 import { shoppingCartReducer } from './ShoppingCartSection/reducers';
+import { EditProductPageState } from './EditProductPageSection/types';
+import { editProductPageReducer } from './EditProductPageSection/reducers';
+import { NewProductState } from './NewProductSection/types';
+import { newProductReducer } from "./NewProductSection/reducers";
 
 export interface AppState {
     prodListReducer : ProductListState;
     prodDetailsReducer : ProductDetailsState;
     cartReducer : ShoppingCartState;
+    editProductReducer : EditProductPageState;
+    newProdReducer : NewProductState;
 }
 
 const rootReducer = combineReducers({
     prodListReducer : productListReducer,
     prodDetailsReducer : productDetailsReducer,
-    cartReducer : shoppingCartReducer
+    cartReducer : shoppingCartReducer,
+    editProductReducer : editProductPageReducer,
+    newProdReducer : newProductReducer
 });
 
 export function configureStore() {

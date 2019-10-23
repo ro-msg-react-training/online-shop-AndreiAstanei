@@ -2,34 +2,32 @@ import React from 'react';
 import { IProduct } from '../Models/Models';
 import '../Styles/ComponentsStyles/ProductDetails.scss';
 import ConfirmationModal from '../HelperComponents/ConfirmationModal';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { AppState } from '../ReduxStore';
 import { Dispatch } from 'redux';
 import { loadProductDetails } from '../ReduxStore/ProductDetailsSection/actions';
 import { connect } from 'react-redux';
+import { addProductToCart } from '../ReduxStore/ShoppingCartSection/actions';
 
 interface ProductDetailsProps {
   match?: any;
-  addProductToShoppingCartFunction: (product : IProduct) => void;
-  completelyRemoveProductFromStore: (productID : number) => void;
   toBeReceivedData: IProduct;
   isLoading: boolean;
   error?: string;
   isDeleteModalOpen: boolean;
   shouldRedirectToShoppingCart: boolean;
   loadProductDetails : (toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) => void;
+  addProductToCart : (productToBeAddedInCart : IProduct, checkoutStatus : number) => void;
 }
 
 interface AdditionalProductDetailsState {
   match?: any;
-  addProductToShoppingCartFunction: (product : IProduct) => void;
-  completelyRemoveProductFromStore: (productID : number) => void;
 }
 
 class ProductDetails extends React.Component<ProductDetailsProps> {
 
   handleAddToShoppingCartClick = () => {
-    this.props.addProductToShoppingCartFunction(this.props.toBeReceivedData);
+    this.props.addProductToCart(this.props.toBeReceivedData, 0);
     this.props.loadProductDetails(this.props.toBeReceivedData, this.props.isLoading, this.props.isDeleteModalOpen, true, this.props.error)
   }
 
@@ -78,7 +76,6 @@ class ProductDetails extends React.Component<ProductDetailsProps> {
         <div className="container is-vcentered">Loading product details...</div>
       );
     } else if (this.props.shouldRedirectToShoppingCart) {
-      console.log(this.props.shouldRedirectToShoppingCart);
       return <Redirect to="/shoppingCart" />
     }
 
@@ -122,7 +119,7 @@ class ProductDetails extends React.Component<ProductDetailsProps> {
 
         <div className='columns'>
           <div className='column'>
-            <button className="button is-rounded is-primary is-medium" onClick={this.handleAddToShoppingCartClick}>
+            <button className="button is-rounded is-primary is-medium" onClick={this.handleAddToShoppingCartClick.bind(this)}>
               <span className="icon">
                 <i className="fas fa-cart-plus" />
               </span>
@@ -133,15 +130,24 @@ class ProductDetails extends React.Component<ProductDetailsProps> {
 
         <div className='columns'>
           <div className='column'>
-            <button className="button is-rounded is-danger is-outlined is-medium" onClick={this.handleDeleteProductClick}>
+            <button className="button is-rounded is-danger is-medium" onClick={this.handleDeleteProductClick.bind(this)}>
               <span>Remove product</span>
               <span className="icon">
                 <i className="fas fa-times" />
               </span>
             </button>
+
+            <Link to={`../editProduct/${this.props.toBeReceivedData.id}`}>
+            <button className="button is-rounded is-info is-medium">
+              <span>Edit product</span>
+              <span className="icon">
+                <i className="fas fa-times" />
+              </span>
+            </button>
+            </Link>
           </div>
         </div>
-        <ConfirmationModal ProductId={this.props.toBeReceivedData.id} show={this.props.isDeleteModalOpen} showModalFunction={this.handleDeleteProductClick.bind(this)} completelyRemoveProductFromStore={this.props.completelyRemoveProductFromStore} />
+        <ConfirmationModal ProductId={this.props.toBeReceivedData.id} show={this.props.isDeleteModalOpen} showModalFunction={this.handleDeleteProductClick.bind(this)} />
       </div>
     );
   }
@@ -153,13 +159,12 @@ const mapStateToProps = (state : AppState, additionalState : AdditionalProductDe
   error: state.prodDetailsReducer.error,
   isDeleteModalOpen: state.prodDetailsReducer.isDeleteModalOpen,
   shouldRedirectToShoppingCart: state.prodDetailsReducer.shouldRedirectToShoppingCart,
-  match: additionalState.match,
-  addProductToShoppingCartFunction: additionalState.addProductToShoppingCartFunction,
-  completelyRemoveProductFromStore: additionalState.completelyRemoveProductFromStore
+  match: additionalState.match
 });
 
 const mapDispatchToProps = (dispatch : Dispatch) => ({
-  loadProductDetails : (toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) => dispatch(loadProductDetails(toBeReceivedData, isLoading, isDeleteModalOpen, shouldRedirectToShoppingCart, error))
+  loadProductDetails : (toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) => dispatch(loadProductDetails(toBeReceivedData, isLoading, isDeleteModalOpen, shouldRedirectToShoppingCart, error)),
+  addProductToCart : (productToBeAddedInCart : IProduct) => dispatch(addProductToCart(productToBeAddedInCart))
 });
 
 const ProductDetailsInitializer = connect(

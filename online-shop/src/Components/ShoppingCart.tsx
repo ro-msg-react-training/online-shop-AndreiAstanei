@@ -1,107 +1,144 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ShoppingCartStyles.scss';
-import { IProduct } from '../Models/Models';
+import { IProduct, CheckoutArrayItem } from '../Models/Models';
 import { ProductsImages as ProductImages } from '../Models/Models';
 import { AppState } from '../ReduxStore';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { addProductToCart } from '../ReduxStore/ShoppingCartSection/actions';
+import { addProductToCart, decreaseProductQuantity, checkoutShoppingCart } from '../ReduxStore/ShoppingCartSection/actions';
 
 interface ShoppingCartProps {
   match?: any;
-  shoppingCartUniqueItemsArray: IProduct[];
-
-  decreaseProductQuantity: (productID: number) => void;
-  completelyRemoveProductFromStore: (productID : number) => void;
-  calculateNumberOfSameItem: (productId: number) => number;
-  calculateTotalPrice: () => void;
-  checkoutShoppingCart: () => void;
-
   //Din store
-  productsInShoppingCart : IProduct[];
+  productsInShoppingCart: IProduct[];
+  uniqueProductsInShoppingCart: IProduct[];
   checkoutActionStatus: number;
-  addProductToCart: (updatedProductsInShoppingCart : IProduct, updatedCheckoutStatus : number) => void;
+  numberOfProductsInShoppingCart : number;
+  totalPriceForShoppingCart : number;
+  addProductToCart: (updatedProductsInShoppingCart: IProduct) => void;
+  decreaseProductQuantity: (productID: number, deleteMode : number) => void;
+  checkoutShoppingCart: (productsInShoppingCart: IProduct[], uniqueProductsInShoppingCart: IProduct[], checkoutActionStatus: number) => void;
 }
 
 interface AdditionalShoppingCartState {
   match?: any;
-  shoppingCartUniqueItemsArray: IProduct[];
-
-  decreaseProductQuantity: (productID: number) => void;
-  completelyRemoveProductFromStore: (productID : number) => void;
-  calculateNumberOfSameItem: (productId: number) => number;
-  calculateTotalPrice: () => void;
-  checkoutShoppingCart: () => void;
 }
 
-class ShoppingCart extends React.Component<ShoppingCartProps> {
-  constructor(props: ShoppingCartProps) {
-    super(props);
-
-    this.state = {
-      shoppingCartUniqueItemsArray: this.props.shoppingCartUniqueItemsArray
-    }
-  }
-
+class ShoppingCart extends React.Component<ShoppingCartProps> {  
   onDeleteProductPressed = (productID: number): any => {
     //removing product from both arrays untill it is completely gone
-    while (this.props.calculateNumberOfSameItem(productID)) {
-      this.props.decreaseProductQuantity(productID);
-    }
+      this.props.decreaseProductQuantity(productID, 2);
+
   }
 
   onDecreaseProductQuantity = (productID: number): any => {
-    this.props.decreaseProductQuantity(productID);
+    this.props.decreaseProductQuantity(productID, 1);
   }
 
   onIncreaseProductQuantity = (product: IProduct): any => {
-    this.props.addProductToCart(product, 0);
+    this.props.addProductToCart(product);
   }
 
   onCheckoutClicked() {
-    this.props.checkoutShoppingCart();
+    let apiCallResponse: number = 0;
+    let i : number;
+    const checkoutValue = `{"customer": "doej", "products": ${JSON.stringify(this.generateCheckoutArray(this.props.uniqueProductsInShoppingCart))}}`;
+    const ordersApiEndpointUrl = "http://localhost:4000/orders/";
+
+    //Delete all items from both ProductsInShoppingCart and UniqueArray
+    for(i = this.props.uniqueProductsInShoppingCart.length - 1; i >= 0; i--) {
+      this.props.decreaseProductQuantity(this.props.uniqueProductsInShoppingCart[i].id, 2);
+    }
+
+    fetch(ordersApiEndpointUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }, method: 'POST', body: checkoutValue
+    })
+      .then(response => {
+        apiCallResponse = response.status
+      })
+      .then(result => console.log(result))
+      .catch(error => {
+        console.log(error);
+        apiCallResponse = 999;
+      })
+      .finally(() => {
+        this.props.checkoutShoppingCart(this.props.productsInShoppingCart, this.props.uniqueProductsInShoppingCart, apiCallResponse);
+      });
+  }
+
+//   tempShowProductArrayItems = (array : IProduct[]) : string => {
+//     let elements : string = "";
+//     array.forEach(
+//       (product) => {
+//         elements += product.id + " " + product.name + "\n";
+//       }
+//     );
+
+//     return elements;
+//   }
+
+  calculateNumberOfSameItem = (arrayToCalculateFrom: IProduct[], productId: number): number => {
+  let numberOfSameProduct = 0;
+
+  arrayToCalculateFrom.forEach(
+      (product) => {
+          if (product.id === productId) {
+              numberOfSameProduct++;
+          }
+      });
+
+  return numberOfSameProduct;
+}
+
+  generateCheckoutArray = (arrayToGenerateCheckoutValueFrom : IProduct[]): CheckoutArrayItem[] => {
+    let customCheckoutArray: Array<CheckoutArrayItem> = arrayToGenerateCheckoutValueFrom.map(product => ({ 'productId': product.id, 'quantity': this.calculateNumberOfSameItem(arrayToGenerateCheckoutValueFrom, product.id) }));
+
+    return customCheckoutArray;
   }
 
   render() {
-    let product = this.props.shoppingCartUniqueItemsArray.map(
-      (product: IProduct) =>
-      <div key={product.id + "Key"} className = "ShoppingCartProducts">
-        <div className="columns box is-vcentered has-text-centered">
-          <div className="column">
-            <Link to={`/products/${product.id}`}>
-              <img src={ProductImages[product.id].imageUrl} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
-            </Link>
-          </div>
-          <div className="column">
-            <Link to={`/products/${product.id}`}>
-              <p className="is-size-6 has-text-grey-dark has-text-weight-semibold">{product.name}</p>
-              <p className="is-size-6 has-text-price-color has-text-weight-semibold">{this.props.calculateNumberOfSameItem(product.id) * product.price} lei</p>
-              <p className="is-size-7 has-text-grey">In {product.category}</p>
-            </Link>
-          </div>
-          <div className="column">
-            <p className="is-size-6 has-text-grey has-text-weight-semibold">Quantity</p>
-            <div className="columns is-gapless">
-              <div className="column"><button className="button is-small is-danger is-outlined has-text-weight-bold" onClick={this.onDecreaseProductQuantity.bind(this, product.id)}>-</button></div>
-              <div className="column"><p className="is-vcentered has-text-weight-semibold is-size-6">{this.props.calculateNumberOfSameItem(product.id)}</p></div>
-              <div className="column"><button className="button is-small is-danger is-outlined has-text-weight-bold" onClick={this.onIncreaseProductQuantity.bind(this, product)}>+</button></div>
-            </div>
-            <button className="button is-danger" onClick={this.onDeleteProductPressed.bind(this, product.id)}>Delete product</button>
-          </div>
-        </div>
-      </div>
-    );
-
     if (this.props.checkoutActionStatus === 0) {
+      let product = this.props.uniqueProductsInShoppingCart.map(
+        (product: IProduct) =>
+          <div key={product.id + "Key"} className="ShoppingCartProducts">
+            <div className="columns box is-vcentered has-text-centered">
+              <div className="column">
+                <Link to={`/products/${product.id}`}>
+                  <img src={ProductImages[product.id].imageUrl} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
+                </Link>
+              </div>
+              <div className="column">
+                <Link to={`/products/${product.id}`}>
+                  <p className="is-size-6 has-text-grey-dark has-text-weight-semibold">{product.name}</p>
+                  <p className="is-size-6 has-text-price-color has-text-weight-semibold">{this.calculateNumberOfSameItem(this.props.productsInShoppingCart, product.id) * product.price} lei</p>
+                  <p className="is-size-7 has-text-grey">In {product.category}</p>
+                </Link>
+              </div>
+              <div className="column">
+                <p className="is-size-6 has-text-grey has-text-weight-semibold">Quantity</p>
+                <div className="columns is-gapless">
+                  <div className="column"><button className="button is-small is-danger is-outlined has-text-weight-bold" onClick={this.onDecreaseProductQuantity.bind(this, product.id)}>-</button></div>
+                  <div className="column"><p className="is-vcentered has-text-weight-semibold is-size-6">{this.calculateNumberOfSameItem(this.props.productsInShoppingCart, product.id)}</p></div>
+                  <div className="column"><button className="button is-small is-danger is-outlined has-text-weight-bold" onClick={this.onIncreaseProductQuantity.bind(this, product)}>+</button></div>
+                </div>
+                <button className="button is-danger" onClick={this.onDeleteProductPressed.bind(this, product.id)}>Delete product</button>
+              </div>
+            </div>
+          </div>
+      );
+
       return (
         <div className="container is-fluid">
           <div className='level'>
             <div className='level-item level-left'>
-              <p className="title has-text-grey-dark has-text-weight-light">Products in cart: {this.props.productsInShoppingCart.length}</p>
+              <p className="title has-text-grey-dark has-text-weight-light">Products in cart: {this.props.numberOfProductsInShoppingCart}</p>
             </div>
             <div className='level-item level-right'>
-              <p id = "shoppingCartPriceTag" className="title has-text-grey-dark has-text-weight-light">Total: {this.props.calculateTotalPrice()} lei</p>
+              <p id="shoppingCartPriceTag" className="title has-text-grey-dark has-text-weight-light">Total: {this.props.totalPriceForShoppingCart} lei</p>
               <button className="button is-primary is-medium is-outlined" onClick={this.onCheckoutClicked.bind(this)}>
                 <span className="icon">
                   <i className="fas fa-cart-arrow-down" />
@@ -147,23 +184,20 @@ class ShoppingCart extends React.Component<ShoppingCartProps> {
   }
 }
 
-const mapStateToProps = (state : AppState, additionalState : AdditionalShoppingCartState) => ({
+const mapStateToProps = (state: AppState, additionalState: AdditionalShoppingCartState) => ({
   match: additionalState.match,
-  shoppingCartUniqueItemsArray: additionalState.shoppingCartUniqueItemsArray,
-
-  decreaseProductQuantity: additionalState.decreaseProductQuantity,
-  completelyRemoveProductFromStore: additionalState.completelyRemoveProductFromStore,
-  calculateNumberOfSameItem: additionalState.calculateNumberOfSameItem,
-  calculateTotalPrice: additionalState.calculateTotalPrice,
-  checkoutShoppingCart: additionalState.checkoutShoppingCart,
-
   //Din store
-  productsInShoppingCart : state.cartReducer.productsInShoppingCart,
-  checkoutActionStatus: state.cartReducer.checkoutActionStatus
+  productsInShoppingCart: state.cartReducer.productsInShoppingCart,
+  uniqueProductsInShoppingCart: state.cartReducer.uniqueProductsInShoppingCart,
+  checkoutActionStatus: state.cartReducer.checkoutActionStatus,
+  numberOfProductsInShoppingCart : state.cartReducer.numberOfProductsInShoppingCart,
+  totalPriceForShoppingCart : state.cartReducer.totalPriceForShoppingCart
 });
 
-const mapDispatchToProps = (dispatch : Dispatch) => ({
-  addProductToCart: (updatedProductsInShoppingCart : IProduct, updatedCheckoutStatus : number) => dispatch(addProductToCart(updatedProductsInShoppingCart,updatedCheckoutStatus ))
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  addProductToCart: (updatedProductsInShoppingCart: IProduct) => dispatch(addProductToCart(updatedProductsInShoppingCart)),
+  decreaseProductQuantity: (productID: number, deleteMode : number) => dispatch(decreaseProductQuantity(productID, deleteMode)),
+  checkoutShoppingCart: (productsInShoppingCart: IProduct[], uniqueProductsInShoppingCart: IProduct[], checkoutActionStatus: number) => dispatch(checkoutShoppingCart(productsInShoppingCart, uniqueProductsInShoppingCart, checkoutActionStatus))
 });
 
 const ShoppingCartInitializer = connect(

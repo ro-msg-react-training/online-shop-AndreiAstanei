@@ -1,29 +1,33 @@
 import React from 'react';
 import '../Styles/ComponentsStyles/ConfirmationModal.scss';
 import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { AppState } from '../ReduxStore';
+import { deleteProductFromStore, activateModalRedirectToProducts } from '../ReduxStore/ProductDetailsSection/actions';
+import { decreaseProductQuantity } from '../ReduxStore/ShoppingCartSection/actions';
 
-interface IProps {
+
+interface ConfirmationModalProps {
+    shouldRedirect: boolean;
     match?: any;
     ProductId: number;
     show: boolean;
     showModalFunction: any;
-    completelyRemoveProductFromStore : any;
-}
+    completelyRemoveProductFromStore: (productID : number) => void;
+    removeFromShoppingCart : (productID : number) => void;
+    activateModalRedirectToProducts: () => void;
+  }
+  
+  interface AdditionalConfirmationModalState {
+    match?: any;
+    ProductId: number;
+    show: boolean;
+    showModalFunction: any;
+  }
 
-interface IState {
-    shouldRedirect: boolean;
-}
-
-export default class ConfirmationModal extends React.Component<IProps, IState> {
+class ConfirmationModal extends React.Component<ConfirmationModalProps> {
     abortController = new AbortController();
-
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            shouldRedirect: false
-        }
-    }
 
     handleDeleteProductClick = () => {
         const deleteProductApiEndpoint = `http://localhost:4000/products/${this.props.ProductId}`;
@@ -42,13 +46,10 @@ export default class ConfirmationModal extends React.Component<IProps, IState> {
             })
             .then(() => {
                 //asta era dupa primul then, si aveam eroarea aia
-                this.setState({
-                    shouldRedirect: true
-                });
-            })
-            .then(
-                this.props.completelyRemoveProductFromStore(this.props.ProductId)
-            );
+               this.props.activateModalRedirectToProducts();
+               this.props.completelyRemoveProductFromStore(this.props.ProductId);
+               this.props.removeFromShoppingCart(this.props.ProductId);
+            });
     }
 
     componentWillUnmount() {
@@ -56,7 +57,7 @@ export default class ConfirmationModal extends React.Component<IProps, IState> {
     }
 
     render() {
-        if (this.state.shouldRedirect) {
+        if (this.props.shouldRedirect) {
             return <Redirect to="/products" />
         }
 
@@ -81,3 +82,24 @@ export default class ConfirmationModal extends React.Component<IProps, IState> {
         );
     }
 }
+
+const mapStateToProps = (state : AppState, additionalState : AdditionalConfirmationModalState) => ({
+    shouldRedirect: state.prodDetailsReducer.shouldRedirectFromModalDelete,
+    match: additionalState.match,
+    ProductId: additionalState.ProductId,
+    show: additionalState.show,
+    showModalFunction: additionalState.showModalFunction
+  });
+  
+  const mapDispatchToProps = (dispatch : Dispatch) => ({
+    completelyRemoveProductFromStore : (productID : number) => dispatch(deleteProductFromStore(productID)),
+    activateModalRedirectToProducts: () => dispatch(activateModalRedirectToProducts()),
+    removeFromShoppingCart : (productID : number) => dispatch(decreaseProductQuantity(productID, 2))
+  });
+  
+  const ProductDetailsInitializer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ConfirmationModal);
+  
+  export default ProductDetailsInitializer;

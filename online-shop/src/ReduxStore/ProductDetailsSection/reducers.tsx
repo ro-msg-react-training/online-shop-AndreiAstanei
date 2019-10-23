@@ -1,6 +1,6 @@
-import { ProductDetailsState, LOAD_PRODUCT_DETAILS, ProductDetailsActionTypes } from './types';
+import * as SCTypes from './types';
 
-const initialState: ProductDetailsState = {
+const initialState: SCTypes.ProductDetailsState = {
     toBeReceivedData: {
         id: 0,
         name: "Unknown",
@@ -12,19 +12,44 @@ const initialState: ProductDetailsState = {
     isLoading: false,
     isDeleteModalOpen: false,
     shouldRedirectToShoppingCart: false,
-    error: "No errors found"
+    error: "No errors found",
+    shouldRedirectFromModalDelete: false
 };
 
-export function productDetailsReducer(state : ProductDetailsState = initialState, action : ProductDetailsActionTypes) : ProductDetailsState {
+export function productDetailsReducer(state : SCTypes.ProductDetailsState = initialState, action : SCTypes.ProductDetailsActionTypes) : SCTypes.ProductDetailsState {
     switch(action.type) {
-        case LOAD_PRODUCT_DETAILS:
+        case SCTypes.LOAD_PRODUCT_DETAILS:{
             return {
                 toBeReceivedData : action.toBeReceivedData,
                 isLoading : action.isLoading,
                 isDeleteModalOpen : action.isDeleteModalOpen,
                 shouldRedirectToShoppingCart : action.shouldRedirectToShoppingCart,
-                error : action.error
+                error : action.error,
+                shouldRedirectFromModalDelete : state.shouldRedirectFromModalDelete
             };
+        }
+
+        case SCTypes.DELETE_PRODUCT_FROM_STORE: {
+            return {
+                toBeReceivedData : state.toBeReceivedData,
+                isLoading : state.isLoading,
+                isDeleteModalOpen : state.isDeleteModalOpen,
+                shouldRedirectToShoppingCart : state.shouldRedirectToShoppingCart,
+                error : state.error,
+                shouldRedirectFromModalDelete : state.shouldRedirectFromModalDelete
+            }
+        }
+
+        case SCTypes.ACTIVATE_MODAL_REDIRECT_TO_PRODUCTS: {
+            return {
+                toBeReceivedData : state.toBeReceivedData,
+                isLoading : state.isLoading,
+                isDeleteModalOpen : state.isDeleteModalOpen,
+                shouldRedirectToShoppingCart : state.shouldRedirectToShoppingCart,
+                error : state.error,
+                shouldRedirectFromModalDelete : !state.shouldRedirectFromModalDelete
+            };
+        }
 
         default:
             return state;
