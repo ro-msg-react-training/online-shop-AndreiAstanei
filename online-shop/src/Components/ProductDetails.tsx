@@ -5,9 +5,10 @@ import ConfirmationModal from '../HelperComponents/ConfirmationModal';
 import { Redirect, Link } from 'react-router-dom';
 import { AppState } from '../ReduxStore';
 import { Dispatch } from 'redux';
-import { loadProductDetails } from '../ReduxStore/ProductDetailsSection/actions';
+import { activateRedirect, deactivateRedirect, toggleConfirmationDialog } from '../ReduxStore/ProductDetailsSection/actions';
 import { connect } from 'react-redux';
 import { addProductToCart } from '../ReduxStore/ShoppingCartSection/actions';
+import { LOAD_PRODUCT_DETAILS } from '../ReduxStore/ProductDetailsSection/types';
 
 interface ProductDetailsProps {
   match?: any;
@@ -16,8 +17,11 @@ interface ProductDetailsProps {
   error?: string;
   isDeleteModalOpen: boolean;
   shouldRedirectToShoppingCart: boolean;
-  loadProductDetails : (toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) => void;
+  loadProductDetails : (id : number) => void;
   addProductToCart : (productToBeAddedInCart : IProduct, checkoutStatus : number) => void;
+  activateRedirect : () => void;
+  deactivateRedirect : () => void;
+  toggleConfirmationDialog : () => void;
 }
 
 interface AdditionalProductDetailsState {
@@ -28,44 +32,19 @@ class ProductDetails extends React.Component<ProductDetailsProps> {
 
   handleAddToShoppingCartClick = () => {
     this.props.addProductToCart(this.props.toBeReceivedData, 0);
-    this.props.loadProductDetails(this.props.toBeReceivedData, this.props.isLoading, this.props.isDeleteModalOpen, true, this.props.error)
+    this.props.activateRedirect();
   }
 
   handleDeleteProductClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    this.props.loadProductDetails(this.props.toBeReceivedData, this.props.isLoading, !this.props.isDeleteModalOpen, false, this.props.error);
+    this.props.toggleConfirmationDialog();
   }
 
   componentDidMount() {
-    const ProductDetailsApiEndpoint = `http://localhost:4000/products/${this.props.match.params.id}`;
-
-    let receivedProductData : IProduct = {} as any;
-    let loadingStatus : boolean = true;
-    let deleteModalStatus : boolean = false;
-    let redirectToShoppingCartAction : boolean = false;
-    let errorMessage : string = "No errors found";
-
-    fetch(ProductDetailsApiEndpoint, { method: 'GET' })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Could not load product details.');
-        }
-      })
-      .then(productData => {
-        receivedProductData = productData;
-        loadingStatus = false;
-      })
-      .catch(error => {
-        console.log("This is the error: " + error);
-        errorMessage = error;
-        loadingStatus = false;
-      })
-      .then(() => this.props.loadProductDetails(receivedProductData, loadingStatus, deleteModalStatus, redirectToShoppingCartAction, errorMessage));
+    this.props.loadProductDetails(this.props.match.params.id);
   }
 
   componentDidUpdate() {
-    this.props.loadProductDetails(this.props.toBeReceivedData, this.props.isLoading, this.props.isDeleteModalOpen, false, this.props.error);
+    this.props.deactivateRedirect();
   }
 
   render() {
@@ -163,8 +142,11 @@ const mapStateToProps = (state : AppState, additionalState : AdditionalProductDe
 });
 
 const mapDispatchToProps = (dispatch : Dispatch) => ({
-  loadProductDetails : (toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) => dispatch(loadProductDetails(toBeReceivedData, isLoading, isDeleteModalOpen, shouldRedirectToShoppingCart, error)),
-  addProductToCart : (productToBeAddedInCart : IProduct) => dispatch(addProductToCart(productToBeAddedInCart))
+  loadProductDetails : (id : number) => dispatch({type : LOAD_PRODUCT_DETAILS, payload : id}),
+  addProductToCart : (productToBeAddedInCart : IProduct) => dispatch(addProductToCart(productToBeAddedInCart)),
+  activateRedirect : () => dispatch(activateRedirect()),
+  deactivateRedirect : () => dispatch(deactivateRedirect()),
+  toggleConfirmationDialog : () => dispatch(toggleConfirmationDialog())
 });
 
 const ProductDetailsInitializer = connect(

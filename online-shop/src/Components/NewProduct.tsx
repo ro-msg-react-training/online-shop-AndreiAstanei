@@ -3,16 +3,16 @@ import '../Styles/ComponentsStyles/ProductDetails.scss';
 import { AppState } from '../ReduxStore';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IProduct, ProductsImages, CustomProductImage } from '../Models/Models';
+import { IProduct } from '../Models/Models';
 import { Dispatch } from 'redux';
 import { createNewProduct } from '../ReduxStore/NewProductSection/actions';
-import { addNewEntryToArray } from '../ReduxStore/AppComponentSection/actions';
+import { CREATE_PRODUCT } from '../ReduxStore/NewProductSection/types';
 
 interface NewProductProps {
     match: any;
     createProductServerResponse: number;
-    createNewProduct: (serverResponse: number) => void;
-    addNewEntryToArray: (newItem : CustomProductImage) => void;
+    createNewProduct: (productData : IProduct) => void;
+    resetPageStatus: (status : number) => void;
 }
 
 interface AdditionalNewProductState {
@@ -80,10 +80,8 @@ class NewProduct extends React.Component<NewProductProps> {
 
     onApplyChangesClicked = () => {
         if (this.areNewFormValuesOk()) {
-            let serverResponse: number = 0;
-
             const newProduct: IProduct = {
-                id: this.productId,
+                id: 123,
                 name: this.productTitle,
                 category: this.productCategory,
                 price: this.productPrice,
@@ -91,43 +89,14 @@ class NewProduct extends React.Component<NewProductProps> {
                 description: this.productDescription
             };
 
-            const apiEndpoint = "http://localhost:4000/products";
-            console.log(JSON.stringify(newProduct));
-
-            fetch(apiEndpoint, {
-                headers: {
-                    'Content-Type': 'application/json; chartset=UTF-8',
-                    'Accept': 'application/json'
-                }, method: 'POST', body: JSON.stringify(newProduct)
-            })
-                .then(response => {
-                    if(response.status === 200) {
-                    serverResponse = response.status;
-                    } else {
-                        serverResponse = 204;
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                    serverResponse = 999;
-                })
-                .finally(() => {
-                    this.props.createNewProduct(serverResponse);
-                    this.props.addNewEntryToArray({productId : this.productId, imageUrl : this.productImage});
-                });
+            //Send the API call to the server to create the new product
+            this.props.createNewProduct(newProduct);
         }
     }
 
     componentDidMount() {
-        fetch("http://localhost:4000/products", { method: 'GET' })
-            .then(response => response.json())
-            .then(result => {
-                this.productId = [...result].length + 1;
-            })
-            .catch(error => {
-                console.log("Error found: " + error);
-            })
-            .finally(() => this.props.createNewProduct(0));
+        //Reset the state of the component to the default value
+        this.props.resetPageStatus(0);
     }
 
     render() {
@@ -247,8 +216,8 @@ const mapStateToProps = (state: AppState, additionalState: AdditionalNewProductS
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    createNewProduct: (serverResponse: number) => dispatch(createNewProduct(serverResponse)),
-    addNewEntryToArray: (newItem : CustomProductImage) => dispatch(addNewEntryToArray(newItem))
+    createNewProduct: (productData : IProduct) => dispatch({type : CREATE_PRODUCT, payload : productData}),
+    resetPageStatus: (status : number) => dispatch(createNewProduct(status))
 });
 
 const NewProductInitializer = connect(

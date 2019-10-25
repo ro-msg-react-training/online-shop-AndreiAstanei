@@ -4,15 +4,16 @@ import { AppState } from '../ReduxStore';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IProduct } from '../Models/Models';
-import { loadProductData, editProduct, initialProductDetailsLoad } from '../ReduxStore/EditProductPageSection/actions';
+import { initialProductDetailsLoad } from '../ReduxStore/EditProductPageSection/actions';
 import { Dispatch } from 'redux';
+import { LOAD_PRODUCT_DETAILS_FOR_EDIT, EDIT_PRODUCT } from '../ReduxStore/EditProductPageSection/types';
 
 interface EditProductPageProps {
     productInEditStage: IProduct;
     isLoading: boolean;
     submitChangesResponse: number;
-    loadProductData: (product: IProduct) => void;
-    editProduct: (product: IProduct, serverResponse: number) => void;
+    loadProductData: (productID: number) => void;
+    editProduct: (product: IProduct) => void;
     match: any;
     initialProductDetailsLoad: () => void;
 }
@@ -93,10 +94,14 @@ class EditProductPage extends React.Component<EditProductPageProps> {
     }
 
     onApplyChangesClicked = () => {
+        this.productTitle = this.productTitle;
+        this.productCategory = this.productCategory;
+        this.productPrice = this.productPrice;
+        this.productImage = this.productImage;
+        this.productDescription = this.productDescription;
+
         if (this.didFormInputValuesChanged()) {
             if (this.areNewFormValuesOk()) {
-                let serverResponse: number = 0;
-
                 const updatedProduct: IProduct = {
                     id: this.props.productInEditStage.id,
                     name: this.productTitle,
@@ -106,26 +111,7 @@ class EditProductPage extends React.Component<EditProductPageProps> {
                     description: this.productDescription
                 };
 
-                const apiEndpoint = "http://localhost:4000/products/" + this.props.productInEditStage.id;
-
-
-                fetch(apiEndpoint, {
-                    headers: {
-                        'Content-Type': 'application/json; chartset=UTF-8',
-                        'Accept': 'application/json'
-                    }, method: 'PUT', body: JSON.stringify(updatedProduct)
-                })
-                    .then(response => {
-                        serverResponse = response.status;
-                    })
-                    .then(result => console.log(result))
-                    .catch(error => {
-                        console.log(error);
-                        serverResponse = 999;
-                    })
-                    .finally(() => {
-                        this.props.editProduct(updatedProduct, serverResponse);
-                    });
+                this.props.editProduct(updatedProduct);
             }
         } else {
             alert("New values are needed for input fields to apply the changes.");
@@ -133,34 +119,14 @@ class EditProductPage extends React.Component<EditProductPageProps> {
     }
 
     componentDidMount() {
-        this.props.initialProductDetailsLoad();
+        //this.props.initialProductDetailsLoad();
+        this.props.loadProductData(this.props.match.params.id);
 
-        const ProductDetailsApiEndpoint = "http://localhost:4000/products/" + this.props.match.params.id;
-
-        let receivedProductData: IProduct = {} as any;
-
-        fetch(ProductDetailsApiEndpoint)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Could not load product details.');
-                }
-            })
-            .then(productData => {
-                receivedProductData = productData;
-            })
-            .catch(error => {
-                console.log("This is the error: " + error);
-            })
-            .finally(() => {
-                this.productTitle = receivedProductData.name;
-                this.productCategory = receivedProductData.category;
-                this.productPrice = receivedProductData.price;
-                this.productImage = receivedProductData.image;
-                this.productDescription = receivedProductData.description;
-                this.props.loadProductData(receivedProductData);
-            });
+        this.productTitle = this.props.productInEditStage.name;
+        this.productCategory = this.props.productInEditStage.category;
+        this.productPrice = this.props.productInEditStage.price;
+        this.productImage = this.props.productInEditStage.image;
+        this.productDescription = this.props.productInEditStage.description;
     }
 
     render() {
@@ -289,8 +255,8 @@ const mapStateToProps = (state: AppState, additionalState: AdditionalEditProduct
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    loadProductData: (product: IProduct) => dispatch(loadProductData(product)),
-    editProduct: (product: IProduct, serverResponse: number) => dispatch(editProduct(product, serverResponse)),
+    loadProductData: (productID: number) => dispatch({ type: LOAD_PRODUCT_DETAILS_FOR_EDIT, payload: productID }),
+    editProduct: (product: IProduct) => dispatch({type : EDIT_PRODUCT, payload : product}),
     initialProductDetailsLoad: () => dispatch(initialProductDetailsLoad())
 });
 

@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { productListReducer } from './ProductListSection/reducers';
 import { ProductListState } from './ProductListSection/types';
 import { productDetailsReducer } from './ProductDetailsSection/reducers';
@@ -11,6 +11,9 @@ import { NewProductState } from './NewProductSection/types';
 import { newProductReducer } from "./NewProductSection/reducers";
 import { AppComponentState } from './AppComponentSection/types';
 import { appComponentReducer } from './AppComponentSection/reducers';
+
+import createSagaMiddleware from 'redux-saga';
+import rootSaga from '../Sagas/saga';
 
 export interface AppState {
     prodListReducer : ProductListState;
@@ -30,8 +33,16 @@ const rootReducer = combineReducers({
     appReducer : appComponentReducer
 });
 
+const sagaMiddleware = createSagaMiddleware();
+
 export function configureStore() {
-    const store = createStore(rootReducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
+    const store = createStore(rootReducer,
+        compose(
+            applyMiddleware(sagaMiddleware),
+            (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+            ));
+
+    sagaMiddleware.run(rootSaga);
 
     return store;
 }

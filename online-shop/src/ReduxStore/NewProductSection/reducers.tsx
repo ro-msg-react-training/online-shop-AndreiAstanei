@@ -6,7 +6,7 @@ const initialState: NPTypes.NewProductState = {
 
 export function newProductReducer(state: NPTypes.NewProductState = initialState, action: NPTypes.NewProductActionTypes): NPTypes.NewProductState {
     switch(action.type) {
-        case NPTypes.CREATE_PRODUCT: {
+        case NPTypes.CREATE_PRODUCT_ASYNC: {
             const currentAction : NPTypes.NPCreateNewProductAction = action as NPTypes.NPCreateNewProductAction;
 
             return {

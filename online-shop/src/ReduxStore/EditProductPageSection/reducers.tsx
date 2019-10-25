@@ -15,7 +15,7 @@ const initialState: EPTypes.EditProductPageState = {
 
 export function editProductPageReducer(state: EPTypes.EditProductPageState = initialState, action: EPTypes.EditProductPageActionTypes): EPTypes.EditProductPageState {
     switch(action.type) {
-        case EPTypes.LOAD_PRODUCT_DETAILS_FOR_EDIT: {
+        case EPTypes.LOAD_PRODUCT_DETAILS_FOR_EDIT_ASYNC: {
             const currentAction : EPTypes.EPLoadProductDetailsAction = action as EPTypes.EPLoadProductDetailsAction;
 
             return {
@@ -25,7 +25,7 @@ export function editProductPageReducer(state: EPTypes.EditProductPageState = ini
             };
         }
 
-        case EPTypes.EDIT_PRODUCT: {
+        case EPTypes.EDIT_PRODUCT_ASYNC: {
             const currentAction : EPTypes.EPEditProductAction = action as EPTypes.EPEditProductAction;
 
             return {
@@ -36,8 +36,6 @@ export function editProductPageReducer(state: EPTypes.EditProductPageState = ini
         }
 
         case EPTypes.INITIAL_PRPODUCT_DETAILS_LOAD: {
-            const currentAction : EPTypes.EPInitialLoadAction = action as EPTypes.EPInitialLoadAction;
-
             return {
                 productInEditStage : state.productInEditStage,
                 isLoading : true,

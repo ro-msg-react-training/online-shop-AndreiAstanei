@@ -13,6 +13,7 @@ export const ADD_PRODUCT_TO_CART = "ADD_PRODUCT_TO_CART";
 export const DECREASE_PRODUCT_QUANTITY = "DECREASE_PRODUCT_QUANTITY";
 export const CHECKOUT_SHOPPING_CART = "CHECKOUT_SHOPPING_CART";
 export const RESET_SHOPPING_CART = "RESER_SHOPPING_CART";
+export const CHECKOUT_SHOPPING_CART_ASYNC = "CHECKOUT_SHOPPING_CART_ASYNC";
 
 export interface SCAddProductToCartAction {
     type: typeof ADD_PRODUCT_TO_CART;
@@ -26,7 +27,7 @@ export interface SCDecreaseProductQuantityAction {
 }
 
 export interface SCCheckoutShoppingCartAction {
-    type: typeof CHECKOUT_SHOPPING_CART;
+    type: typeof CHECKOUT_SHOPPING_CART_ASYNC;
     productsInShoppingCart : IProduct[];
     uniqueProductsInShoppingCart : IProduct[];
     checkoutActionStatus : number;

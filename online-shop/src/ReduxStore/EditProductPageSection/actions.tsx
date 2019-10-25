@@ -3,14 +3,14 @@ import * as EPTypes from './types';
 
 export function loadProductData(productDetails: IProduct): EPTypes.EditProductPageActionTypes {
     return {
-        type: EPTypes.LOAD_PRODUCT_DETAILS_FOR_EDIT,
+        type: EPTypes.LOAD_PRODUCT_DETAILS_FOR_EDIT_ASYNC,
         product: productDetails
     };
 }
 
 export function editProduct(productDetails: IProduct, serverResponse : number): EPTypes.EditProductPageActionTypes {
     return {
-        type: EPTypes.EDIT_PRODUCT,
+        type: EPTypes.EDIT_PRODUCT_ASYNC,
         product: productDetails,
         submitChangesResponse: serverResponse
     };

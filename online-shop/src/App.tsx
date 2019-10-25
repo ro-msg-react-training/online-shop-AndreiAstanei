@@ -20,7 +20,7 @@ export default class App extends React.Component {
             <Redirect exact from='/' to='/products' />
             <Route path="/products" exact render = {(props) => <ProductList {...props} />}/>
             <Route path="/products/:id" exact render={(props) => <ProductDetails {...props} />} />
-            <Route path="/shoppingCart" exact render={() => <ShoppingCart />} />
+            <Route path="/shoppingCart" exact render={(props) => <ShoppingCart match = {props.match}/>} />
             <Route path="/editProduct/:id" exact render={(props) => <EditProductPage match = {props.match}/>} />
             <Route path="/newProduct" exact render={(props) => <NewProductInitializer match = {props.match}/>}/>
           </Switch>

@@ -1,21 +1,19 @@
 import React from 'react';
-import { IProduct, CustomProductImage } from '../Models/Models';
+import { IProduct, CustomProductImage, ProductsImages } from '../Models/Models';
 import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ProductList.scss';
-import { ProductsImages } from '../Models/Models';
 import { AppState } from '../ReduxStore';
 import { Dispatch } from 'redux';
-import { loadProducts } from '../ReduxStore/ProductListSection/actions';
 import { connect } from 'react-redux';
 import { resetShoppingCart } from '../ReduxStore/ShoppingCartSection/actions';
 import { activateModalRedirectToProducts } from '../ReduxStore/ProductDetailsSection/actions';
 
 interface ProductListProps {
-  match?: any;
+  match: any;
   productList: IProduct[];
   isLoading: boolean;
   error: string;
-  loadProducts: (data: IProduct[], isLoading: boolean, error: string) => void;
+  loadProducts: () => void;
   shoppingCartStatus: number;
   resetShoppingCart: () => void;
   productDeletionRedirectStatus: boolean;
@@ -24,17 +22,11 @@ interface ProductListProps {
 }
 
 interface AdditionalComponentState {
-  match?: any;
+  match: any;
 }
 
 class ProductList extends React.Component<ProductListProps> {
-  ProductsApiEndpointUrl = "http://localhost:4000/products";
-
   componentDidMount() {
-    let fetchedList: IProduct[] = [];
-    let loadingStatus: boolean = true;
-    let errorMessage: string = "No errors found";
-
     if (this.props.shoppingCartStatus !== 0) {
       this.props.resetShoppingCart();
     }
@@ -43,31 +35,7 @@ class ProductList extends React.Component<ProductListProps> {
       this.props.activateModalRedirectToProducts();
     }
 
-    fetch(this.ProductsApiEndpointUrl, { method: 'GET' })
-      .then(response => response.json())
-      .then(result => {
-        fetchedList = result;
-        loadingStatus = false
-      })
-      .catch(error => {
-        errorMessage = error;
-        loadingStatus = false
-      })
-      .then(() => this.props.loadProducts(fetchedList, loadingStatus, errorMessage));
-  }
-
-  getCorrespondingImageForProduct = (id : number) : string => {
-    let defaultValue : string = "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png";
-
-    for(let i : number = this.props.secondaryProductImagesArray.length - 1; i >= 0; i--) {
-      let product : CustomProductImage = this.props.secondaryProductImagesArray[i];
-
-      if(product.productId === id) {
-        defaultValue = product.imageUrl;
-      }
-    }
-
-    return defaultValue;
+    this.props.loadProducts();
   }
 
   render() {
@@ -81,7 +49,7 @@ class ProductList extends React.Component<ProductListProps> {
       (product: IProduct) => 
         <Link key={'ProductLinkKey' + product.id} to={`${this.props.match.url}/${product.id}`}>
           <div id={'Product' + product.id} className='column box has-text-centered ProductsListElements'>
-            <img src={this.getCorrespondingImageForProduct(product.id)} className="ProductsListImages" alt={product.category + " " + product.id} />
+            <img src={ProductsImages[product.id] ? ProductsImages[product.id].imageUrl : "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png"} className="ProductsListImages" alt={product.category + " " + product.id} />
             <p className="is-size-5 has-text-grey-dark has-text-weight-semibold appliedEllipsisEffect">{product.name}</p>
             <p className="is-size-5 has-text-price-color has-text-weight-semibold appliedEllipsisEffect">{product.price} lei</p>
             <p className="is-size-7 has-text-grey appliedEllipsisEffect">In {product.category}</p>
@@ -113,7 +81,7 @@ const mapStateToProps = (state: AppState, myOwnState: AdditionalComponentState) 
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  loadProducts: (data: IProduct[], isLoading: boolean, error: string) => dispatch(loadProducts(data, isLoading, error)),
+  loadProducts: () => dispatch({type: 'LOAD_PRODUCTS'}),
   resetShoppingCart: () => dispatch(resetShoppingCart()),
   activateModalRedirectToProducts: () => dispatch(activateModalRedirectToProducts())
 });

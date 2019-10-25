@@ -1,4 +1,4 @@
-import { ProductListState, LOAD_PRODUCTS, ProductListActionTypes } from './types';
+import { ProductListState, LOAD_PRODUCTS_ASYNC, ProductListActionTypes } from './types';
 
 const initialState: ProductListState = {
     data: [],
@@ -6,10 +6,9 @@ const initialState: ProductListState = {
     error: "No errors found"
 };
 
-export function productListReducer(state : ProductListState = initialState, action: ProductListActionTypes): ProductListState {
-
+export function productListReducer(state : ProductListState = initialState, action: ProductListActionTypes): ProductListState {    
     switch (action.type) {
-        case LOAD_PRODUCTS:
+        case LOAD_PRODUCTS_ASYNC:
             return {
                 data: action.data,
                 isLoading : action.isLoading,

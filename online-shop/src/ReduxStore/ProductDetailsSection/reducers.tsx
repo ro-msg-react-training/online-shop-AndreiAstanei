@@ -1,6 +1,6 @@
-import * as SCTypes from './types';
+import * as PDTypes from './types';
 
-const initialState: SCTypes.ProductDetailsState = {
+const initialState: PDTypes.ProductDetailsState = {
     toBeReceivedData: {
         id: 0,
         name: "Unknown",
@@ -16,9 +16,9 @@ const initialState: SCTypes.ProductDetailsState = {
     shouldRedirectFromModalDelete: false
 };
 
-export function productDetailsReducer(state : SCTypes.ProductDetailsState = initialState, action : SCTypes.ProductDetailsActionTypes) : SCTypes.ProductDetailsState {
+export function productDetailsReducer(state : PDTypes.ProductDetailsState = initialState, action : PDTypes.ProductDetailsActionTypes) : PDTypes.ProductDetailsState {
     switch(action.type) {
-        case SCTypes.LOAD_PRODUCT_DETAILS:{
+        case PDTypes.LOAD_PRODUCT_DETAILS_ASYNC:{
             return {
                 toBeReceivedData : action.toBeReceivedData,
                 isLoading : action.isLoading,
@@ -29,7 +29,7 @@ export function productDetailsReducer(state : SCTypes.ProductDetailsState = init
             };
         }
 
-        case SCTypes.DELETE_PRODUCT_FROM_STORE: {
+        case PDTypes.DELETE_PRODUCT_FROM_STORE: {
             return {
                 toBeReceivedData : state.toBeReceivedData,
                 isLoading : state.isLoading,
@@ -40,7 +40,7 @@ export function productDetailsReducer(state : SCTypes.ProductDetailsState = init
             }
         }
 
-        case SCTypes.ACTIVATE_MODAL_REDIRECT_TO_PRODUCTS: {
+        case PDTypes.ACTIVATE_MODAL_REDIRECT_TO_PRODUCTS: {
             return {
                 toBeReceivedData : state.toBeReceivedData,
                 isLoading : state.isLoading,
@@ -48,6 +48,39 @@ export function productDetailsReducer(state : SCTypes.ProductDetailsState = init
                 shouldRedirectToShoppingCart : state.shouldRedirectToShoppingCart,
                 error : state.error,
                 shouldRedirectFromModalDelete : !state.shouldRedirectFromModalDelete
+            };
+        }
+
+        case PDTypes.ACTIVATE_REDIRECT: {
+            return {
+                toBeReceivedData : state.toBeReceivedData,
+                isLoading : state.isLoading,
+                isDeleteModalOpen : state.isDeleteModalOpen,
+                shouldRedirectToShoppingCart : true,
+                error : state.error,
+                shouldRedirectFromModalDelete : state.shouldRedirectFromModalDelete
+            };
+        }
+
+        case PDTypes.DEACTIVATE_REDIRECT: {
+            return {
+                toBeReceivedData : state.toBeReceivedData,
+                isLoading : state.isLoading,
+                isDeleteModalOpen : state.isDeleteModalOpen,
+                shouldRedirectToShoppingCart : false,
+                error : state.error,
+                shouldRedirectFromModalDelete : state.shouldRedirectFromModalDelete
+            };
+        }
+
+        case PDTypes.TOGGLE_CONFIRMATION_DIALOG: {
+            return {
+                toBeReceivedData : state.toBeReceivedData,
+                isLoading : state.isLoading,
+                isDeleteModalOpen : !state.isDeleteModalOpen,
+                shouldRedirectToShoppingCart : state.shouldRedirectToShoppingCart,
+                error : state.error,
+                shouldRedirectFromModalDelete : state.shouldRedirectFromModalDelete
             };
         }
 

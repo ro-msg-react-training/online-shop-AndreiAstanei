@@ -18,7 +18,7 @@ export function decreaseProductQuantity(productID : number, deleteMode : number)
 
 export function checkoutShoppingCart(productsInShoppingCart : IProduct[], uniqueProductsInShoppingCart : IProduct[], checkoutActionStatus : number) : SCTypes.SCCheckoutShoppingCartAction {
     return {
-        type : SCTypes.CHECKOUT_SHOPPING_CART,
+        type : SCTypes.CHECKOUT_SHOPPING_CART_ASYNC,
         productsInShoppingCart : productsInShoppingCart,
         uniqueProductsInShoppingCart : uniqueProductsInShoppingCart,
         checkoutActionStatus : checkoutActionStatus

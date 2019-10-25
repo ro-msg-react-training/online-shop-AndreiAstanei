@@ -26,14 +26,17 @@ export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialSt
 
         case SCTypes.DECREASE_PRODUCT_QUANTITY: {
             const currentAction: SCTypes.SCDecreaseProductQuantityAction = action as SCTypes.SCDecreaseProductQuantityAction;
-            let tempProductsInShoppingCart: IProduct[] = state.productsInShoppingCart;
-            let tempUniqueProductsInShoppingCart: IProduct[] = state.uniqueProductsInShoppingCart;
+            let tempProductsInShoppingCart: IProduct[] = [];
+            let tempUniqueProductsInShoppingCart: IProduct[] = [];
             let tempCheckoutActionStatus: number = state.checkoutActionStatus;
 
             let deleteMode = currentAction.deleteMode;
 
             //Single mode delete
             if (deleteMode === 1) {
+                tempProductsInShoppingCart = state.productsInShoppingCart;
+                tempUniqueProductsInShoppingCart = state.uniqueProductsInShoppingCart;
+
                 if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) > 1) {
                     tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(state.productsInShoppingCart, currentAction.productID);
                 } else if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) === 1) {
@@ -41,6 +44,9 @@ export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialSt
                     tempUniqueProductsInShoppingCart = removeItemFromUniqueArray(state, currentAction.productID);
                 }   //All mode delete
             } else if (deleteMode === 2) {
+                tempProductsInShoppingCart = state.productsInShoppingCart;
+                tempUniqueProductsInShoppingCart = state.uniqueProductsInShoppingCart;
+                
                 while (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) >= 1) {
                     if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) > 1) {
                         tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(state.productsInShoppingCart, currentAction.productID);
@@ -60,7 +66,7 @@ export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialSt
             };
         }
 
-        case SCTypes.CHECKOUT_SHOPPING_CART: {
+        case SCTypes.CHECKOUT_SHOPPING_CART_ASYNC: {
             const currentAction: SCTypes.SCCheckoutShoppingCartAction = action as SCTypes.SCCheckoutShoppingCartAction;
 
             return {

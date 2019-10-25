@@ -6,10 +6,11 @@ import { ProductsImages } from '../Models/Models';
 import { AppState } from '../ReduxStore';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { addProductToCart, decreaseProductQuantity, checkoutShoppingCart } from '../ReduxStore/ShoppingCartSection/actions';
+import { addProductToCart, decreaseProductQuantity } from '../ReduxStore/ShoppingCartSection/actions';
+import { CHECKOUT_SHOPPING_CART } from '../ReduxStore/ShoppingCartSection/types';
 
 interface ShoppingCartProps {
-  match?: any;
+  match: any;
   //Din store
   productsInShoppingCart: IProduct[];
   uniqueProductsInShoppingCart: IProduct[];
@@ -18,11 +19,11 @@ interface ShoppingCartProps {
   totalPriceForShoppingCart : number;
   addProductToCart: (updatedProductsInShoppingCart: IProduct) => void;
   decreaseProductQuantity: (productID: number, deleteMode : number) => void;
-  checkoutShoppingCart: (productsInShoppingCart: IProduct[], uniqueProductsInShoppingCart: IProduct[], checkoutActionStatus: number) => void;
+  checkoutShoppingCart: (generatedStringForApiCall : string) => void;
 }
 
 interface AdditionalShoppingCartState {
-  match?: any;
+  match: any;
 }
 
 class ShoppingCart extends React.Component<ShoppingCartProps> {  
@@ -41,33 +42,15 @@ class ShoppingCart extends React.Component<ShoppingCartProps> {
   }
 
   onCheckoutClicked() {
-    let apiCallResponse: number = 0;
-    let i : number;
-    const checkoutValue = `{"customer": "doej", "products": ${JSON.stringify(this.generateCheckoutArray(this.props.uniqueProductsInShoppingCart))}}`;
-    const ordersApiEndpointUrl = "http://localhost:4000/orders/";
-
+    const checkoutValue : string = `{"customer": "doej", "products": ${JSON.stringify(this.generateCheckoutArray(this.props.uniqueProductsInShoppingCart))}}`;
+    
     //Delete all items from both ProductsInShoppingCart and UniqueArray
-    for(i = this.props.uniqueProductsInShoppingCart.length - 1; i >= 0; i--) {
-      this.props.decreaseProductQuantity(this.props.uniqueProductsInShoppingCart[i].id, 2);
-    }
+    // for(let i : number = this.props.uniqueProductsInShoppingCart.length - 1; i >= 0; i--) {
+    //   console.log("Deleting product with id: " + this.props.uniqueProductsInShoppingCart[i].id + " ...");
+    //   this.props.decreaseProductQuantity(this.props.uniqueProductsInShoppingCart[i].id, 2);
+    // }
 
-    fetch(ordersApiEndpointUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }, method: 'POST', body: checkoutValue
-    })
-      .then(response => {
-        apiCallResponse = response.status
-      })
-      .then(result => console.log(result))
-      .catch(error => {
-        console.log(error);
-        apiCallResponse = 999;
-      })
-      .finally(() => {
-        this.props.checkoutShoppingCart(this.props.productsInShoppingCart, this.props.uniqueProductsInShoppingCart, apiCallResponse);
-      });
+    this.props.checkoutShoppingCart(checkoutValue);
   }
 
   calculateNumberOfSameItem = (arrayToCalculateFrom: IProduct[], productId: number): number => {
@@ -84,7 +67,7 @@ class ShoppingCart extends React.Component<ShoppingCartProps> {
 }
 
   generateCheckoutArray = (arrayToGenerateCheckoutValueFrom : IProduct[]): CheckoutArrayItem[] => {
-    let customCheckoutArray: Array<CheckoutArrayItem> = arrayToGenerateCheckoutValueFrom.map(product => ({ 'productId': product.id, 'quantity': this.calculateNumberOfSameItem(arrayToGenerateCheckoutValueFrom, product.id) }));
+    let customCheckoutArray: Array<CheckoutArrayItem> = arrayToGenerateCheckoutValueFrom.map(product => ({ 'productId': product.id, 'quantity': this.calculateNumberOfSameItem(this.props.productsInShoppingCart, product.id) }));
 
     return customCheckoutArray;
   }
@@ -186,7 +169,7 @@ const mapStateToProps = (state: AppState, additionalState: AdditionalShoppingCar
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   addProductToCart: (updatedProductsInShoppingCart: IProduct) => dispatch(addProductToCart(updatedProductsInShoppingCart)),
   decreaseProductQuantity: (productID: number, deleteMode : number) => dispatch(decreaseProductQuantity(productID, deleteMode)),
-  checkoutShoppingCart: (productsInShoppingCart: IProduct[], uniqueProductsInShoppingCart: IProduct[], checkoutActionStatus: number) => dispatch(checkoutShoppingCart(productsInShoppingCart, uniqueProductsInShoppingCart, checkoutActionStatus))
+  checkoutShoppingCart: (generatedStringForApiCall : string) => dispatch({type : CHECKOUT_SHOPPING_CART, checkoutValue : generatedStringForApiCall})
 });
 
 const ShoppingCartInitializer = connect(

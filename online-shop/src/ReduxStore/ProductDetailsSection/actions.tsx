@@ -1,9 +1,9 @@
 import { IProduct } from '../../Models/Models';
-import * as SCTypes from './types';
+import * as PDTypes from './types';
 
-export function loadProductDetails(toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) : SCTypes.ProductDetailsActionTypes {
+export function loadProductDetails(toBeReceivedData: IProduct, isLoading: boolean, isDeleteModalOpen: boolean, shouldRedirectToShoppingCart: boolean, error?: string) : PDTypes.ProductDetailsActionTypes {
     return {
-        type : SCTypes.LOAD_PRODUCT_DETAILS,
+        type : PDTypes.LOAD_PRODUCT_DETAILS_ASYNC,
         toBeReceivedData : toBeReceivedData,
         isLoading : isLoading,
         isDeleteModalOpen : isDeleteModalOpen,
@@ -12,15 +12,33 @@ export function loadProductDetails(toBeReceivedData: IProduct, isLoading: boolea
     };
 }
 
-export function deleteProductFromStore(productID : number) : SCTypes.ProductDetailsActionTypes {
+export function deleteProductFromStore(productID : number) : PDTypes.ProductDetailsActionTypes {
     return {
-       type : SCTypes.DELETE_PRODUCT_FROM_STORE,
+       type : PDTypes.DELETE_PRODUCT_FROM_STORE,
        productID : productID 
     };
 }
 
-export function activateModalRedirectToProducts() : SCTypes.ProductDetailsActionTypes {
+export function activateModalRedirectToProducts() : PDTypes.ProductDetailsActionTypes {
     return {
-        type : SCTypes.ACTIVATE_MODAL_REDIRECT_TO_PRODUCTS
+        type : PDTypes.ACTIVATE_MODAL_REDIRECT_TO_PRODUCTS
+    };
+}
+
+export function activateRedirect() : PDTypes.ProductDetailsActionTypes {
+    return {
+        type : PDTypes.ACTIVATE_REDIRECT
+    };
+}
+
+export function deactivateRedirect() : PDTypes.ProductDetailsActionTypes {
+    return {
+        type : PDTypes.DEACTIVATE_REDIRECT
+    };
+}
+
+export function toggleConfirmationDialog() : PDTypes.ProductDetailsActionTypes {
+    return {
+        type : PDTypes.TOGGLE_CONFIRMATION_DIALOG
     };
 }

@@ -4,9 +4,6 @@ import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AppState } from '../ReduxStore';
-import { deleteProductFromStore, activateModalRedirectToProducts } from '../ReduxStore/ProductDetailsSection/actions';
-import { decreaseProductQuantity } from '../ReduxStore/ShoppingCartSection/actions';
-
 
 interface ConfirmationModalProps {
     shouldRedirect: boolean;
@@ -14,9 +11,7 @@ interface ConfirmationModalProps {
     ProductId: number;
     show: boolean;
     showModalFunction: any;
-    completelyRemoveProductFromStore: (productID : number) => void;
-    removeFromShoppingCart : (productID : number) => void;
-    activateModalRedirectToProducts: () => void;
+    callDeleteProductACtion:(productID : number) => void;
   }
   
   interface AdditionalConfirmationModalState {
@@ -27,33 +22,9 @@ interface ConfirmationModalProps {
   }
 
 class ConfirmationModal extends React.Component<ConfirmationModalProps> {
-    abortController = new AbortController();
-
     handleDeleteProductClick = () => {
-        const deleteProductApiEndpoint = `http://localhost:4000/products/${this.props.ProductId}`;
-
-        fetch(deleteProductApiEndpoint, { method: 'DELETE', signal: this.abortController.signal })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Encountered a problem when deleting the product.');
-                }
-            })
-            .then(() => {
-                this.props.showModalFunction();
-            })
-            .catch(error => {
-                this.setState(error)
-            })
-            .then(() => {
-                //asta era dupa primul then, si aveam eroarea aia
-               this.props.activateModalRedirectToProducts();
-               this.props.completelyRemoveProductFromStore(this.props.ProductId);
-               this.props.removeFromShoppingCart(this.props.ProductId);
-            });
-    }
-
-    componentWillUnmount() {
-        this.abortController.abort();
+        this.props.showModalFunction();
+        this.props.callDeleteProductACtion(this.props.ProductId);
     }
 
     render() {
@@ -92,9 +63,7 @@ const mapStateToProps = (state : AppState, additionalState : AdditionalConfirmat
   });
   
   const mapDispatchToProps = (dispatch : Dispatch) => ({
-    completelyRemoveProductFromStore : (productID : number) => dispatch(deleteProductFromStore(productID)),
-    activateModalRedirectToProducts: () => dispatch(activateModalRedirectToProducts()),
-    removeFromShoppingCart : (productID : number) => dispatch(decreaseProductQuantity(productID, 2))
+    callDeleteProductACtion:(productID : number) => dispatch({type : "DELETE_PROD_MODAL", payload : productID})
   });
   
   const ProductDetailsInitializer = connect(
