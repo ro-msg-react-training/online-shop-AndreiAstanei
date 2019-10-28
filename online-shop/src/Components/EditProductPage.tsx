@@ -119,7 +119,7 @@ class EditProductPage extends React.Component<EditProductPageProps> {
     }
 
     componentDidMount() {
-        //this.props.initialProductDetailsLoad();
+        this.props.initialProductDetailsLoad();
         this.props.loadProductData(this.props.match.params.id);
 
         this.productTitle = this.props.productInEditStage.name;
