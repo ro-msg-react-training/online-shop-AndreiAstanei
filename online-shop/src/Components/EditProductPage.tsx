@@ -71,11 +71,11 @@ class EditProductPage extends React.Component<EditProductPageProps> {
         }
     }
 
-    areNewFormValuesOk = (): boolean => {
-        if (this.productTitle.length !== 0) {
-            if (this.productImage.length !== 0) {
-                if (this.productDescription.length !== 0) {
-                    if (Number(this.productPrice)) {
+    areNewFormValuesOk = (title : string, image : string, description : string, price : string): boolean => {
+        if (title.length !== 0) {
+            if (image.length !== 0) {
+                if (description.length !== 0) {
+                    if (Number(price)) {
                         return true;
                     } else {
                         alert("Product price must have a numeric value");
@@ -94,14 +94,8 @@ class EditProductPage extends React.Component<EditProductPageProps> {
     }
 
     onApplyChangesClicked = () => {
-        this.productTitle = this.productTitle;
-        this.productCategory = this.productCategory;
-        this.productPrice = this.productPrice;
-        this.productImage = this.productImage;
-        this.productDescription = this.productDescription;
-
         if (this.didFormInputValuesChanged()) {
-            if (this.areNewFormValuesOk()) {
+            if (this.areNewFormValuesOk(this.productTitle, this.productImage, this.productDescription, this.productPrice.toString())) {
                 const updatedProduct: IProduct = {
                     id: this.props.productInEditStage.id,
                     name: this.productTitle,

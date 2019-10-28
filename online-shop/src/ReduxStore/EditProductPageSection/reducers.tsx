@@ -19,7 +19,7 @@ export function editProductPageReducer(state: EPTypes.EditProductPageState = ini
             const currentAction : EPTypes.EPLoadProductDetailsAction = action as EPTypes.EPLoadProductDetailsAction;
 
             return {
-                productInEditStage : currentAction.product,
+                productInEditStage : {...currentAction.product},
                 isLoading : false,
                 submitChangesResponse : 0
             };
@@ -36,10 +36,12 @@ export function editProductPageReducer(state: EPTypes.EditProductPageState = ini
         }
 
         case EPTypes.INITIAL_PRPODUCT_DETAILS_LOAD: {
+            console.log("Reducer Initial Load - " + state.productInEditStage + ", " + state.submitChangesResponse + ", " + state.isLoading);
+
             return {
                 productInEditStage : state.productInEditStage,
                 isLoading : true,
-                submitChangesResponse : state.submitChangesResponse
+                submitChangesResponse : 0
             };
         }
 
