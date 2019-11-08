@@ -11,6 +11,8 @@ import { NewProductState } from './NewProductSection/types';
 import { newProductReducer } from "./NewProductSection/reducers";
 import { AppComponentState } from './AppComponentSection/types';
 import { appComponentReducer } from './AppComponentSection/reducers';
+import { SalesViewState } from './SalesViewSection/types';
+import { salesViewReducer } from './SalesViewSection/reducers';
 
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../Sagas/saga';
@@ -22,6 +24,7 @@ export interface AppState {
     editProductReducer : EditProductPageState;
     newProdReducer : NewProductState;
     appReducer : AppComponentState;
+    salesReducer : SalesViewState;
 }
 
 const rootReducer = combineReducers({
@@ -30,7 +33,8 @@ const rootReducer = combineReducers({
     cartReducer : shoppingCartReducer,
     editProductReducer : editProductPageReducer,
     newProdReducer : newProductReducer,
-    appReducer : appComponentReducer
+    appReducer : appComponentReducer,
+    salesReducer : salesViewReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();

@@ -1,14 +1,14 @@
 import React, { SyntheticEvent } from 'react';
-import '../Styles/ComponentsStyles/ProductDetails.scss';
-import { AppState } from '../ReduxStore';
+import '../../Styles/ComponentsStyles/ProductDetails.scss';
+import { AppState } from '../../ReduxStore';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IProduct } from '../Models/Models';
-import { initialProductDetailsLoad } from '../ReduxStore/EditProductPageSection/actions';
+import { IProduct } from '../../Models/Models';
+import { initialProductDetailsLoad } from '../../ReduxStore/EditProductPageSection/actions';
 import { Dispatch } from 'redux';
-import { LOAD_PRODUCT_DETAILS_FOR_EDIT, EDIT_PRODUCT } from '../ReduxStore/EditProductPageSection/types';
+import { LOAD_PRODUCT_DETAILS_FOR_EDIT, EDIT_PRODUCT } from '../../ReduxStore/EditProductPageSection/types';
 
-interface EditProductPageProps {
+interface EditProductPageProps1 {
     productInEditStage: IProduct;
     isLoading: boolean;
     submitChangesResponse: number;
@@ -22,31 +22,65 @@ interface AdditionalEditProductPageState {
     match: any;
 }
 
-class EditProductPage extends React.Component<EditProductPageProps> {
-    productTitle: string = "";
-    productCategory: string = "";
-    productPrice: number = 0;
-    productImage: string = "";
-    productDescription: string = "";
+interface LocalComponentState {
+    productTitle: string;
+    productCategory: string;
+    productPrice: number;
+    productImage: string;
+    productDescription: string;
+}
+
+class EditProductPage extends React.Component<EditProductPageProps1, LocalComponentState> {
+    constructor(props : EditProductPageProps1) {
+        super(props);
+
+        this.state = {
+            productTitle : "Unknown title",
+            productCategory : "Laptops",
+            productPrice : 0,
+            productImage : "",
+            productDescription : "No description provided"
+        };
+    }
 
     onTitleChange = (e: SyntheticEvent) => {
-        this.productTitle = (e.target as HTMLInputElement).value.trim();
+        let title : string = (e.target as HTMLInputElement).value.trim();
+
+        this.setState({
+            productTitle : title
+        });
     }
 
     onCategoryChange = (e: SyntheticEvent) => {
-        this.productCategory = (e.target as HTMLInputElement).value.trim();
+        let category : string = (e.target as HTMLInputElement).value.trim();
+
+        this.setState({
+            productCategory : category
+        });
     }
 
     onPriceChange = (e: SyntheticEvent) => {
-        this.productPrice = +(e.target as HTMLInputElement).value.trim();  //string -> number conversion : +string = number
+        let price : number = +(e.target as HTMLInputElement).value.trim();  //string -> number conversion : +string = number
+
+        this.setState({
+            productPrice : price
+        });
     }
 
     onImageChange = (e: SyntheticEvent) => {
-        this.productImage = (e.target as HTMLInputElement).value.trim();
+        let image : string = (e.target as HTMLInputElement).value.trim();
+
+        this.setState({
+            productImage : image
+        });
     }
 
     onDescriptionChange = (e: SyntheticEvent) => {
-        this.productDescription = (e.target as HTMLInputElement).value.trim();
+        let description : string = (e.target as HTMLInputElement).value.trim();
+
+        this.setState({
+            productDescription : description
+        });
     }
 
     //String comparison function
@@ -59,35 +93,29 @@ class EditProductPage extends React.Component<EditProductPageProps> {
     }
 
     didFormInputValuesChanged = (): boolean => {
-        if (this.areStringsEqual(this.productTitle, this.props.productInEditStage.name) &&
-            this.areStringsEqual(this.productCategory, this.props.productInEditStage.category) &&
-            (this.productPrice === this.props.productInEditStage.price) &&
-            this.areStringsEqual(this.productImage, this.props.productInEditStage.image) &&
-            this.areStringsEqual(this.productDescription, this.props.productInEditStage.description)) {
+        if (!this.areStringsEqual(this.state.productTitle, this.props.productInEditStage.name) ||
+            !this.areStringsEqual(this.state.productCategory, this.props.productInEditStage.category) ||
+            (this.state.productPrice !== this.props.productInEditStage.price) ||
+            !this.areStringsEqual(this.state.productImage, this.props.productInEditStage.image) ||
+            !this.areStringsEqual(this.state.productDescription, this.props.productInEditStage.description)) {
 
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 
     areNewFormValuesOk = (title : string, image : string, description : string, price : string): boolean => {
-        if (title.length !== 0) {
-            if (image.length !== 0) {
-                if (description.length !== 0) {
-                    if (Number(price)) {
-                        return true;
-                    } else {
-                        alert("Product price must have a numeric value");
-                    }
-                } else {
-                    alert("Product description is missing");
-                }
-            } else {
-                alert("Product image is missing");
-            }
-        } else {
+        if(title.length === 0) {
             alert("Product title is missing");
+        } else if(image.length === 0) {
+            alert("Product image is missing");
+        } else if(description.length === 0) {
+            alert("Product description is missing");
+        } else if(Number(price)) {
+            alert("Product price must have a numeric value");
+        } else {
+            return true;
         }
 
         return false;
@@ -95,17 +123,18 @@ class EditProductPage extends React.Component<EditProductPageProps> {
 
     onApplyChangesClicked = () => {
         if (this.didFormInputValuesChanged()) {
-            if (this.areNewFormValuesOk(this.productTitle, this.productImage, this.productDescription, this.productPrice.toString())) {
+            if (this.areNewFormValuesOk(this.state.productTitle, this.state.productImage, this.state.productDescription, this.state.productPrice.toString())) {
                 const updatedProduct: IProduct = {
                     id: this.props.productInEditStage.id,
-                    name: this.productTitle,
-                    category: this.productCategory,
-                    price: this.productPrice,
-                    image: this.productImage,
-                    description: this.productDescription
+                    name: this.state.productTitle,
+                    category: this.state.productCategory,
+                    price: this.state.productPrice,
+                    image: this.state.productImage,
+                    description: this.state.productDescription
                 };
 
-                this.props.editProduct(updatedProduct);
+                console.log("New values for product: " + updatedProduct);
+                //this.props.editProduct(updatedProduct);
             }
         } else {
             alert("New values are needed for input fields to apply the changes.");
@@ -116,11 +145,13 @@ class EditProductPage extends React.Component<EditProductPageProps> {
         this.props.initialProductDetailsLoad();
         this.props.loadProductData(this.props.match.params.id);
 
-        this.productTitle = this.props.productInEditStage.name;
-        this.productCategory = this.props.productInEditStage.category;
-        this.productPrice = this.props.productInEditStage.price;
-        this.productImage = this.props.productInEditStage.image;
-        this.productDescription = this.props.productInEditStage.description;
+        this.setState({
+            productTitle : this.props.productInEditStage.name,
+            productCategory : this.props.productInEditStage.category,
+            productPrice : this.props.productInEditStage.price,
+            productImage : this.props.productInEditStage.image,
+            productDescription : this.props.productInEditStage.description
+        });
     }
 
     render() {

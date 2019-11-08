@@ -1,15 +1,14 @@
 import React from 'react';
-import { IProduct, CustomProductImage, ProductsImages } from '../Models/Models';
+import { IProduct, CustomProductImage, ProductsImages } from '../../Models/Models';
 import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ProductList.scss';
-import { AppState } from '../ReduxStore';
+import { AppState } from '../../ReduxStore';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { resetShoppingCart } from '../ReduxStore/ShoppingCartSection/actions';
-import { activateModalRedirectToProducts } from '../ReduxStore/ProductDetailsSection/actions';
+import { resetShoppingCart } from '../../ReduxStore/ShoppingCartSection/actions';
+import { activateModalRedirectToProducts } from '../../ReduxStore/ProductDetailsSection/actions';
 
-interface ProductListProps {
-  match: any;
+export interface ProductListProps {
   productList: IProduct[];
   isLoading: boolean;
   error: string;
@@ -21,9 +20,7 @@ interface ProductListProps {
   secondaryProductImagesArray : CustomProductImage[];
 }
 
-interface AdditionalComponentState {
-  match: any;
-}
+interface AdditionalComponentState {}
 
 class ProductList extends React.Component<ProductListProps> {
   componentDidMount() {
@@ -47,7 +44,7 @@ class ProductList extends React.Component<ProductListProps> {
 
     let productsColumn = this.props.productList.map(
       (product: IProduct) => 
-        <Link key={'ProductLinkKey' + product.id} to={`${this.props.match.url}/${product.id}`}>
+        <Link key={'ProductLinkKey' + product.id} to={"/products/" + product.id}>
           <div id={'Product' + product.id} className='column box has-text-centered ProductsListElements'>
             <img src={ProductsImages[product.id] ? ProductsImages[product.id].imageUrl : "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png"} className="ProductsListImages" alt={product.category + " " + product.id} />
             <p className="is-size-5 has-text-grey-dark has-text-weight-semibold appliedEllipsisEffect">{product.name}</p>
@@ -74,7 +71,6 @@ const mapStateToProps = (state: AppState, myOwnState: AdditionalComponentState) 
   productList: state.prodListReducer.data,
   isLoading: state.prodListReducer.isLoading,
   error: state.prodListReducer.error,
-  match: myOwnState.match,
   shoppingCartStatus: state.cartReducer.checkoutActionStatus,
   productDeletionRedirectStatus: state.prodDetailsReducer.shouldRedirectFromModalDelete,
   secondaryProductImagesArray: state.appReducer.secondaryProductImagesArray

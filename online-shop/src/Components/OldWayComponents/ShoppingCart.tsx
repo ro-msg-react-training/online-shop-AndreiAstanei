@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ShoppingCartStyles.scss';
-import { IProduct, CheckoutArrayItem } from '../Models/Models';
-import { ProductsImages } from '../Models/Models';
-import { AppState } from '../ReduxStore';
+import { IProduct, CheckoutArrayItem } from '../../Models/Models';
+import { ProductsImages } from '../../Models/Models';
+import { AppState } from '../../ReduxStore';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { addProductToCart, decreaseProductQuantity } from '../ReduxStore/ShoppingCartSection/actions';
-import { CHECKOUT_SHOPPING_CART } from '../ReduxStore/ShoppingCartSection/types';
+import { addProductToCart, decreaseProductQuantity } from '../../ReduxStore/ShoppingCartSection/actions';
+import { CHECKOUT_SHOPPING_CART } from '../../ReduxStore/ShoppingCartSection/types';
 
 interface ShoppingCartProps {
   match: any;
@@ -43,12 +43,6 @@ class ShoppingCart extends React.Component<ShoppingCartProps> {
 
   onCheckoutClicked() {
     const checkoutValue : string = `{"customer": "doej", "products": ${JSON.stringify(this.generateCheckoutArray(this.props.uniqueProductsInShoppingCart))}}`;
-    
-    //Delete all items from both ProductsInShoppingCart and UniqueArray
-    // for(let i : number = this.props.uniqueProductsInShoppingCart.length - 1; i >= 0; i--) {
-    //   console.log("Deleting product with id: " + this.props.uniqueProductsInShoppingCart[i].id + " ...");
-    //   this.props.decreaseProductQuantity(this.props.uniqueProductsInShoppingCart[i].id, 2);
-    // }
 
     this.props.checkoutShoppingCart(checkoutValue);
   }

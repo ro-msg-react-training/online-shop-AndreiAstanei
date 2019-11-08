@@ -1,58 +1,58 @@
 import * as SCTypes from './types';
 import { IProduct } from '../../Models/Models';
+import { cloneDeep } from 'lodash';
 
 const initialState: SCTypes.ShoppingCartState = {
     productsInShoppingCart: [],
     uniqueProductsInShoppingCart: [],
     checkoutActionStatus: 0,
     numberOfProductsInShoppingCart: 0,
-    totalPriceForShoppingCart: 0
+    totalPriceForShoppingCart: 0,
+    isLoading : false
 };
 
 export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialState, action: SCTypes.ShoppingCartActionTypes): SCTypes.ShoppingCartState {
     switch (action.type) {
         case SCTypes.ADD_PRODUCT_TO_CART: {
-            const currentAction: SCTypes.SCAddProductToCartAction = action as SCTypes.SCAddProductToCartAction;
-
-            let addedProductsToArray: IProduct[] = [...state.productsInShoppingCart, currentAction.productToBeAddedInCart];
+            let addedProductsToArray: IProduct[] = [...state.productsInShoppingCart, action.productToBeAddedInCart];
             return {
                 productsInShoppingCart: addedProductsToArray,
                 uniqueProductsInShoppingCart: removeDuplicatesFromMainArray(state, addedProductsToArray),
                 checkoutActionStatus: state.checkoutActionStatus,
                 numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(addedProductsToArray),
-                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(addedProductsToArray)
+                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(addedProductsToArray),
+                isLoading : state.isLoading
             };
         }
 
         case SCTypes.DECREASE_PRODUCT_QUANTITY: {
-            const currentAction: SCTypes.SCDecreaseProductQuantityAction = action as SCTypes.SCDecreaseProductQuantityAction;
             let tempProductsInShoppingCart: IProduct[] = [];
             let tempUniqueProductsInShoppingCart: IProduct[] = [];
             let tempCheckoutActionStatus: number = state.checkoutActionStatus;
 
-            let deleteMode = currentAction.deleteMode;
+            let deleteMode = action.deleteMode;
 
             //Single mode delete
             if (deleteMode === 1) {
-                tempProductsInShoppingCart = state.productsInShoppingCart;
-                tempUniqueProductsInShoppingCart = state.uniqueProductsInShoppingCart;
+                tempProductsInShoppingCart = cloneDeep(state.productsInShoppingCart);
+                tempUniqueProductsInShoppingCart = cloneDeep(state.uniqueProductsInShoppingCart);
 
-                if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) > 1) {
-                    tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(state.productsInShoppingCart, currentAction.productID);
-                } else if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) === 1) {
-                    tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(state.productsInShoppingCart, currentAction.productID);
-                    tempUniqueProductsInShoppingCart = removeItemFromUniqueArray(state, currentAction.productID);
+                if (calculateNumberOfSameItem(tempProductsInShoppingCart, action.productID) > 1) {
+                    tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(tempProductsInShoppingCart, action.productID);
+                } else if (calculateNumberOfSameItem(tempProductsInShoppingCart, action.productID) === 1) {
+                    tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(tempProductsInShoppingCart, action.productID);
+                    tempUniqueProductsInShoppingCart = removeItemFromUniqueArray(tempUniqueProductsInShoppingCart, action.productID);
                 }   //All mode delete
             } else if (deleteMode === 2) {
-                tempProductsInShoppingCart = state.productsInShoppingCart;
-                tempUniqueProductsInShoppingCart = state.uniqueProductsInShoppingCart;
+                tempProductsInShoppingCart = cloneDeep(state.productsInShoppingCart);
+                tempUniqueProductsInShoppingCart = cloneDeep(state.uniqueProductsInShoppingCart);
                 
-                while (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) >= 1) {
-                    if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) > 1) {
-                        tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(state.productsInShoppingCart, currentAction.productID);
-                    } else if (calculateNumberOfSameItem(state.productsInShoppingCart, currentAction.productID) === 1) {
-                        tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(state.productsInShoppingCart, currentAction.productID);
-                        tempUniqueProductsInShoppingCart = removeItemFromUniqueArray(state, currentAction.productID);
+                while (calculateNumberOfSameItem(tempProductsInShoppingCart, action.productID) >= 1) {
+                    if (calculateNumberOfSameItem(tempProductsInShoppingCart, action.productID) > 1) {
+                        tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(tempProductsInShoppingCart, action.productID);
+                    } else if (calculateNumberOfSameItem(tempProductsInShoppingCart, action.productID) === 1) {
+                        tempProductsInShoppingCart = decreaseProductQuantityFromShoppingCart(tempProductsInShoppingCart, action.productID);
+                        tempUniqueProductsInShoppingCart = removeItemFromUniqueArray(tempUniqueProductsInShoppingCart, action.productID);
                     }
                 }
             }
@@ -61,20 +61,20 @@ export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialSt
                 productsInShoppingCart: [...tempProductsInShoppingCart],
                 uniqueProductsInShoppingCart: [...tempUniqueProductsInShoppingCart],
                 checkoutActionStatus: tempCheckoutActionStatus,
-                numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(state.productsInShoppingCart),
-                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(state.productsInShoppingCart)
+                numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(tempProductsInShoppingCart),
+                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(tempProductsInShoppingCart),
+                isLoading : state.isLoading
             };
         }
 
         case SCTypes.CHECKOUT_SHOPPING_CART_ASYNC: {
-            const currentAction: SCTypes.SCCheckoutShoppingCartAction = action as SCTypes.SCCheckoutShoppingCartAction;
-
             return {
-                productsInShoppingCart: currentAction.productsInShoppingCart,
-                uniqueProductsInShoppingCart: currentAction.uniqueProductsInShoppingCart,
-                checkoutActionStatus: currentAction.checkoutActionStatus,
+                productsInShoppingCart: action.productsInShoppingCart,
+                uniqueProductsInShoppingCart: action.uniqueProductsInShoppingCart,
+                checkoutActionStatus: action.checkoutActionStatus,
                 numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(state.productsInShoppingCart),
-                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(state.productsInShoppingCart)
+                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(state.productsInShoppingCart),
+                isLoading : false
             };
         }
 
@@ -84,7 +84,15 @@ export function shoppingCartReducer(state: SCTypes.ShoppingCartState = initialSt
                 uniqueProductsInShoppingCart: state.uniqueProductsInShoppingCart,
                 checkoutActionStatus: 0,
                 numberOfProductsInShoppingCart: calculateNumberOfItemsInShoppingCart(state.productsInShoppingCart),
-                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(state.productsInShoppingCart)
+                totalPriceForShoppingCart: calculateTotalPriceForShoppingCart(state.productsInShoppingCart),
+                isLoading : state.isLoading
+            };
+        }
+
+        case SCTypes.SC_RESET_LOADING_STATUS: {
+            return {
+                ...state,
+                isLoading : true
             };
         }
 
@@ -148,19 +156,18 @@ let removeDuplicatesFromMainArray = (state: SCTypes.ShoppingCartState = initialS
 
 let decreaseProductQuantityFromShoppingCart = (arrayToDecreaseQuantityFrom: IProduct[], productId: number): IProduct[] => {
     let shoppingArrayIndex = arrayToDecreaseQuantityFrom.findIndex(i => i.id === productId);
-    let temporaryArray: IProduct[] = arrayToDecreaseQuantityFrom;
+    let temporaryArray: IProduct[] = cloneDeep(arrayToDecreaseQuantityFrom);
 
     if (shoppingArrayIndex > -1) {
-        //am pus asta aici si merge acum
         temporaryArray.splice(shoppingArrayIndex, 1);
     }
 
     return temporaryArray;
 }
 
-let removeItemFromUniqueArray = (state: SCTypes.ShoppingCartState = initialState, productID: number): IProduct[] => {
-    let productIndexInUniqueArray = state.uniqueProductsInShoppingCart.findIndex(i => i.id === productID);
-    let temporaryArray: IProduct[] = state.uniqueProductsInShoppingCart;
+let removeItemFromUniqueArray = (arrayToDecreaseQuantityFrom : IProduct[], productID: number): IProduct[] => {
+    let productIndexInUniqueArray = arrayToDecreaseQuantityFrom.findIndex(i => i.id === productID);
+    let temporaryArray: IProduct[] = cloneDeep(arrayToDecreaseQuantityFrom);
 
     if (productIndexInUniqueArray > -1) {
         temporaryArray.splice(productIndexInUniqueArray, 1);

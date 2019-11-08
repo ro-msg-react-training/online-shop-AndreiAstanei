@@ -30,3 +30,9 @@ export function resetShoppingCart() : SCTypes.SCResetShoppingCartAction {
         type : SCTypes.RESET_SHOPPING_CART,
     };
 }
+
+export function SCResetLoadingStatus() : SCTypes.SCReserLoadingStatusAction {
+    return {
+        type : SCTypes.SC_RESET_LOADING_STATUS
+    };
+}

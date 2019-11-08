@@ -9,6 +9,7 @@ export interface ProductListState {
 
 export const LOAD_PRODUCTS = "LOAD_PRODUCTS";
 export const LOAD_PRODUCTS_ASYNC = "LOAD_PRODUCTS_ASYNC";
+export const PL_ACTIVATE_LOADING_WINDOW = "PL_ACTIVATE_LOADING_WINDOW";
 
 interface LoadProductsAction {
     type : typeof LOAD_PRODUCTS_ASYNC;
@@ -17,4 +18,10 @@ interface LoadProductsAction {
     error : string;
 }
 
-export type ProductListActionTypes = LoadProductsAction;
+
+interface PLActivateLoadingWindowAction {
+    type : typeof PL_ACTIVATE_LOADING_WINDOW;
+    isLoading : boolean;
+}
+
+export type ProductListActionTypes = LoadProductsAction | PLActivateLoadingWindowAction;

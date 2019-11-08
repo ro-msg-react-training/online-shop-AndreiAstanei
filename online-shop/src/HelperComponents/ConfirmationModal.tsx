@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Styles/ComponentsStyles/ConfirmationModal.scss';
+import '../Styles/ComponentsStyles/ProductDetailsStyles/ConfirmationModal.scss';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';

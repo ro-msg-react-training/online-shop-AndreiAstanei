@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../Styles/ComponentsStyles/Navbar.scss';
+import '../Styles/ComponentsStyles//NavbarStyles/Navbar.scss';
 
 interface IProps {  }
 interface IState {  }
@@ -12,7 +12,7 @@ export default class Navbar extends React.Component<IProps, IState> {
                 <div className="navbar-brand">
                     <Link to="/">
                         <div className="navbar-item">
-                            <img src="https://www.msg-systems.ro/images/msg_og_logo.png" alt="" width="112" height="28" />
+                            <img src="https://www.msg-systems.ro/images/msg_og_logo.png" alt="" width="112" height="30" />
                         </div>
                     </Link>
 
@@ -28,7 +28,7 @@ export default class Navbar extends React.Component<IProps, IState> {
                         <div className="navbar-item">
                             <div className="buttons">
                             <Link to="/products">
-                                    <button id="navBarProductsButton" className="button is-primary">
+                                    <button className="button is-primary navBarProductsButton">
                                         <span className="icon">
                                             <i className="fas fa-store-alt" />
                                         </span>
@@ -36,11 +36,19 @@ export default class Navbar extends React.Component<IProps, IState> {
                                     </button>
                                 </Link>
                                 <Link to="/shoppingCart">
-                                    <button className="button is-primary">
+                                    <button className="button is-primary navBarProductsButton">
                                         <span className="icon">
                                             <i className="fas fa-shopping-cart" />
                                         </span>
                                         <span>Shopping cart</span>
+                                    </button>
+                                </Link>
+                                <Link to="/sales">
+                                    <button className="button is-primary">
+                                        <span className="icon">
+                                            <i className="fas fa-shopping-cart" />
+                                        </span>
+                                        <span>Sales</span>
                                     </button>
                                 </Link>
                             </div>

@@ -1,12 +1,12 @@
 import React, { SyntheticEvent } from 'react';
 import '../Styles/ComponentsStyles/ProductDetails.scss';
-import { AppState } from '../ReduxStore';
+import { AppState } from '../../ReduxStore';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IProduct } from '../Models/Models';
+import { IProduct } from '../../Models/Models';
 import { Dispatch } from 'redux';
-import { createNewProduct } from '../ReduxStore/NewProductSection/actions';
-import { CREATE_PRODUCT } from '../ReduxStore/NewProductSection/types';
+import { createNewProduct } from '../../ReduxStore/NewProductSection/actions';
+import { CREATE_PRODUCT } from '../../ReduxStore/NewProductSection/types';
 
 interface NewProductProps {
     match: any;

@@ -71,3 +71,13 @@ export interface CheckoutArrayItem {
     productId: number,
     quantity: number
 }
+
+export interface SalesItem {
+    category : string;
+    sales : number;
+}
+
+export interface BarChartItem {
+    name : string;
+    data : number;
+}

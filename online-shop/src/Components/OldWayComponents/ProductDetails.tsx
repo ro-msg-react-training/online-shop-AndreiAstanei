@@ -1,14 +1,14 @@
 import React from 'react';
-import { IProduct } from '../Models/Models';
+import { IProduct } from '../../Models/Models';
 import '../Styles/ComponentsStyles/ProductDetails.scss';
-import ConfirmationModal from '../HelperComponents/ConfirmationModal';
+import ConfirmationModal from '../../HelperComponents/ConfirmationModal';
 import { Redirect, Link } from 'react-router-dom';
-import { AppState } from '../ReduxStore';
+import { AppState } from '../../ReduxStore';
 import { Dispatch } from 'redux';
-import { activateRedirect, deactivateRedirect, toggleConfirmationDialog } from '../ReduxStore/ProductDetailsSection/actions';
+import { activateRedirect, deactivateRedirect, toggleConfirmationDialog } from '../../ReduxStore/ProductDetailsSection/actions';
 import { connect } from 'react-redux';
-import { addProductToCart } from '../ReduxStore/ShoppingCartSection/actions';
-import { LOAD_PRODUCT_DETAILS } from '../ReduxStore/ProductDetailsSection/types';
+import { addProductToCart } from '../../ReduxStore/ShoppingCartSection/actions';
+import { LOAD_PRODUCT_DETAILS } from '../../ReduxStore/ProductDetailsSection/types';
 
 interface ProductDetailsProps {
   match?: any;
