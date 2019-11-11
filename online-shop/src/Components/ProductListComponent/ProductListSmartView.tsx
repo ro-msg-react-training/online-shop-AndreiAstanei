@@ -1,13 +1,20 @@
-import { IProduct, CustomProductImage } from "../../Models/Models";
+import { IProduct } from "../../Models/Models";
 import { AppState } from "../../ReduxStore";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { resetShoppingCart } from "../../ReduxStore/ShoppingCartSection/actions";
 import { activateModalRedirectToProducts } from "../../ReduxStore/ProductDetailsSection/actions";
 import { ProductListDumpView } from "./ProductListDumpView";
-import { lifecycle, withHandlers, compose } from 'recompose';
+import { lifecycle, withHandlers, compose, setDisplayName } from 'recompose';
 import { LoadingWindowHoc } from "../../HelperComponents/HocComponents/LoadingWindowHoc";
 import { activateLoadingWindow } from "../../ReduxStore/ProductListSection/actions";
+
+/**
+ * Switched from a local images array, to the server side information. Changes on server side:
+ * backend -> index.js:
+ * 
+ * app.get('/products') { ... .sort()); } -> remove the additional map function, to allow the transfer of image data as well
+ */
 
 export interface ProductListProps {
     productList: IProduct[];
@@ -18,7 +25,6 @@ export interface ProductListProps {
     resetShoppingCart: () => void;
     productDeletionRedirectStatus: boolean;
     activateModalRedirectToProducts: () => void;
-    secondaryProductImagesArray: CustomProductImage[];
     dispatch: Dispatch;
     activateLoadingWindow: (props : ProductListProps) => void;
 }
@@ -28,8 +34,7 @@ const mapStateToProps = (state: AppState) => ({
     isLoading: state.prodListReducer.isLoading,
     error: state.prodListReducer.error,
     shoppingCartStatus: state.cartReducer.checkoutActionStatus,
-    productDeletionRedirectStatus: state.prodDetailsReducer.shouldRedirectFromModalDelete,
-    secondaryProductImagesArray: state.appReducer.secondaryProductImagesArray
+    productDeletionRedirectStatus: state.prodDetailsReducer.shouldRedirectFromModalDelete
 });
 
 const myHandlers = withHandlers({
@@ -70,6 +75,7 @@ const onComponentDidMount = lifecycle<ProductListProps, {}, {}>({
 })
 
 const ProductListViewInitializer = compose<ProductListProps, {}>(
+    setDisplayName('ProductListView'),
     connect(mapStateToProps),
     myHandlers,
     onComponentDidMount,

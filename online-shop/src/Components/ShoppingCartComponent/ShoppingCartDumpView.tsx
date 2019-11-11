@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../Styles/ComponentsStyles/ShoppingCartStyles/ShoppingCartStyles.scss';
 import { IProduct } from '../../Models/Models';
-import { ProductsImages } from '../../Models/Models';
 import { ShoppingCartProps } from './ShoppingCartSmartView';
 import { ErrorComponent } from '../../HelperComponents/ErrorComponent';
 import { ActionStatusReport } from '../../HelperComponents/ActionStatusReport';
@@ -31,7 +30,7 @@ export const ShoppingCartDumpView : React.FC<ShoppingCartProps> = (props : Shopp
               <div className="columns box is-vcentered has-text-centered">
                 <div className="column">
                   <Link to={`/products/${product.id}`}>
-                    <img src={ProductsImages[product.id] ? ProductsImages[product.id].imageUrl : "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png"} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
+                    <img src={product.image ? product.image : "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png"} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
                   </Link>
                 </div>
                 <div className="column">
@@ -55,7 +54,7 @@ export const ShoppingCartDumpView : React.FC<ShoppingCartProps> = (props : Shopp
         );
       } else {
         product = [(
-          <div className = "is-size-4 has-background-white-bis has-text-grey has-text-centered box is-centered has-text-weight-light">
+          <div key = {"emptyCartNotice"} className = "is-size-4 has-background-white-bis has-text-grey has-text-centered box is-centered has-text-weight-light">
             Looks like your shopping cart is empty! <br/> Head over to the products catalog and start shopping.
           </div>
         )]

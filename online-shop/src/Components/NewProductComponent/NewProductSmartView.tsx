@@ -4,7 +4,7 @@ import { IProduct } from '../../Models/Models';
 import { Dispatch } from 'redux';
 import { createNewProduct, updateToBeCreatedProductData } from '../../ReduxStore/NewProductSection/actions';
 import { CREATE_PRODUCT } from '../../ReduxStore/NewProductSection/types';
-import { compose, withHandlers, lifecycle } from 'recompose';
+import { compose, withHandlers, lifecycle, setDisplayName } from 'recompose';
 import { NewProductDumpView } from './NewProductDumpView';
 import { cloneDeep } from 'lodash';
 import { LoadingWindowHoc } from '../../HelperComponents/HocComponents/LoadingWindowHoc';
@@ -136,6 +136,7 @@ const onComponentDidMount = lifecycle<NewProductProps, {}, {}>({
 })
 
 const NewProductViewInitializer = compose<NewProductProps, {}>(
+    setDisplayName('NewProductView'),
     connect(mapStateToProps),
     myHandlers,
     onComponentDidMount,

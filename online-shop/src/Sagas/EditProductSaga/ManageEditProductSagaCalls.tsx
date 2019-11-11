@@ -37,6 +37,10 @@ export function* performLoadProductDetailsForEdit(action: any) {
     const apiEndpoint = "http://localhost:4000/products/" + action.payload.id;
     let serverResponse: number = 0;
     const updatedProduct: IProduct = action.payload;
+
+    console.log("Activating loading...");
+    //Activating loading window
+    yield put(EPResetLoadingStatus());
   
     yield fetch(apiEndpoint, {
       headers: {
@@ -52,5 +56,6 @@ export function* performLoadProductDetailsForEdit(action: any) {
         serverResponse = 999;
       });
   
+    console.log("Deactivating loading...");
     yield put(editProduct(updatedProduct, serverResponse));
   }

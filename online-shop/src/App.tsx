@@ -9,24 +9,50 @@ import ProductDetailsViewInitializer from './Components/ProductDetailsComponent/
 import ShoppingCartViewInitializer from './Components/ShoppingCartComponent/ShoppingCartSmartView';
 import EditProductPageViewInitializer from './Components/EditProductPageComponent/EditProductSmartView';
 import NewProductViewInitializer from './Components/NewProductComponent/NewProductSmartView';
+import { AppState } from './ReduxStore';
+import { connect } from 'react-redux';
+import { LoginComponentDumpView } from './Components/LoginComponent/LoginComponentDumpView';
+import LoginComponentViewInitializer from './Components/LoginComponent/LoginComponentSmartView';
 
-export default class App extends React.Component {
+interface AppComponentState {
+  isLoggedIn: boolean;
+}
+
+class App extends React.Component<AppComponentState> {
+  checkIsLoggedIn(): boolean {
+    //username doej, password: password
+    console.log("Is someone logged in? " + this.props.isLoggedIn);
+    return this.props.isLoggedIn;
+  }
+
   render() {
     return (
-      <Router>
+      <Router key="General Router">
         <div className="App">
-          <Navbar />
+          <Navbar isHidden={this.props.isLoggedIn} />
           <Switch>
             <Redirect exact from='/' to='/products' />
-            <Route path="/products" exact component = {ProductListViewInitializer}/>
-            <Route path="/products/:id" exact render={(props) => <ProductDetailsViewInitializer {...props} />} />
-            <Route path="/shoppingCart" exact component = {ShoppingCartViewInitializer} />
-            <Route path="/editProduct/:id" exact render={(props) => <EditProductPageViewInitializer {...props}/>} />
-            <Route path="/newProduct" exact render={(props) => <NewProductViewInitializer {...props}/>}/>
-            <Route path="/sales" exact render={(props) => <SalesViewInitializer match = {props.match}/>}/>
+            <Route path="/products" exact component={this.checkIsLoggedIn() ? ProductListViewInitializer : LoginComponentViewInitializer} />
+            <Route path="/products/:id" exact render={(props) => this.checkIsLoggedIn() ? <ProductDetailsViewInitializer {...props}/> : LoginComponentViewInitializer} />
+            <Route path="/shoppingCart" exact component={this.checkIsLoggedIn() ? ShoppingCartViewInitializer : LoginComponentViewInitializer} />
+            <Route path="/editProduct/:id" exact render={(props) => this.checkIsLoggedIn() ? <EditProductPageViewInitializer {...props} /> : LoginComponentViewInitializer} />
+            <Route path="/newProduct" exact render={(props) => this.checkIsLoggedIn() ? <NewProductViewInitializer {...props}/> : LoginComponentViewInitializer} />
+            <Route path="/sales" exact render={(props) => this.checkIsLoggedIn() ? <SalesViewInitializer match={props.match}/> : LoginComponentViewInitializer} />
+            {/* Se poate sa fie ceva eroare aici! Nu functioneaza bine loginul(problema aparuta de la redirectionarea spre login din wrong credentials) */}
+            <Route path="/login" exact component={LoginComponentViewInitializer} />
           </Switch>
         </div>
       </Router>
     );
   }
 }
+
+const mapStateToProps = (state: AppState) => ({
+  isLoggedIn: state.loginReducer.isLoggedIn
+});
+
+const AppInitializer = connect(
+  mapStateToProps
+)(App);
+
+export default AppInitializer;

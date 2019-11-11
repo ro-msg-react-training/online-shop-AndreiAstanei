@@ -5,7 +5,7 @@ import { activateRedirect, deactivateRedirect, toggleConfirmationDialog } from '
 import { connect } from 'react-redux';
 import { addProductToCart } from '../../ReduxStore/ShoppingCartSection/actions';
 import { LOAD_PRODUCT_DETAILS } from '../../ReduxStore/ProductDetailsSection/types';
-import { compose, lifecycle, withHandlers } from 'recompose';
+import { compose, lifecycle, withHandlers, setDisplayName } from 'recompose';
 import { ProductDetailsDumpView } from './ProductDetailsDumpView';
 import { LoadingWindowHoc } from '../../HelperComponents/HocComponents/LoadingWindowHoc';
 
@@ -70,6 +70,7 @@ const myHandlers = withHandlers({
 })
 
 const ProductDetailsViewInitializer = compose<ProductDetailsProps, {}>(
+    setDisplayName('ProductDetailsView'),
     connect(mapStateToProps, mapDispatchToProps),
     myHandlers,
     onComponentDidMount,

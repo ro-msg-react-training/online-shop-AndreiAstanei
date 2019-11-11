@@ -4,7 +4,7 @@ import { IProduct } from '../../Models/Models';
 import { initialProductDetailsLoad, updateTemporaryProduct } from '../../ReduxStore/EditProductPageSection/actions';
 import { Dispatch } from 'redux';
 import { LOAD_PRODUCT_DETAILS_FOR_EDIT, EDIT_PRODUCT } from '../../ReduxStore/EditProductPageSection/types';
-import { withHandlers, compose, lifecycle } from 'recompose';
+import { withHandlers, compose, lifecycle, setDisplayName } from 'recompose';
 import { cloneDeep } from 'lodash';
 import { EditProductDumpView } from './EditProductDumpView';
 import { LoadingWindowHoc } from '../../HelperComponents/HocComponents/LoadingWindowHoc';
@@ -175,6 +175,7 @@ const onComponentDiUpdate = lifecycle<EditProductPageProps, {}, {}>({
 })
 
 const EditProductPageViewInitializer = compose<EditProductPageProps, {}>(
+    setDisplayName('EditProductView'),
     connect(mapStateToProps),
     myHandlers,
     onComponentDidMount,

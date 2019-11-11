@@ -13,6 +13,7 @@ export const ActionStatusReport: React.FC<ActionStatusProps> = ({ wasSuccessful,
     return (
         <div className = "container has-text-centered">
             <div className = {"has-text-weight-semi-bold is-size-3 " + textColor}>{message}</div>
+            {console.log("Action status reposrt")}
             <Link to="/products">
                 <div className={"button is-text is-medium " + textColor}>
                     Back to products catalog

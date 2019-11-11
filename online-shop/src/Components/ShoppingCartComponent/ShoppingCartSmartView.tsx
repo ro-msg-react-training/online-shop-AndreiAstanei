@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { addProductToCart, decreaseProductQuantity, SCResetLoadingStatus } from '../../ReduxStore/ShoppingCartSection/actions';
 import { CHECKOUT_SHOPPING_CART } from '../../ReduxStore/ShoppingCartSection/types';
-import { withHandlers, compose } from 'recompose';
+import { withHandlers, compose, setDisplayName } from 'recompose';
 import { ShoppingCartDumpView } from './ShoppingCartDumpView';
 import { LoadingWindowHoc } from '../../HelperComponents/HocComponents/LoadingWindowHoc';
 
@@ -90,6 +90,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 const ShoppingCartViewInitializer = compose<ShoppingCartProps, {}>(
+    setDisplayName('ShoppingCartView'),
     connect(mapStateToProps, mapDispatchToProps),
     myHandlers,
     LoadingWindowHoc

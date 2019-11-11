@@ -2,7 +2,7 @@ import { AppState } from '../../ReduxStore';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { SalesDumpView } from './SalesDumpView';
-import { compose, withHandlers, lifecycle } from 'recompose';
+import { compose, withHandlers, lifecycle, setDisplayName } from 'recompose';
 import { SalesItem } from '../../Models/Models';
 import { changeSelection, svResetLoadingStatus } from '../../ReduxStore/SalesViewSection/actions';
 import { LoadingWindowHoc } from '../../HelperComponents/HocComponents/LoadingWindowHoc';
@@ -63,6 +63,7 @@ const onComponentDidUpdate = lifecycle<SalesViewComponentState, {}, {}> ({
 })
 
 const SalesViewInitializer = compose<SalesViewComponentState, AdditionalSalesViewState>(
+    setDisplayName('SalesView'),
     connect(mapStateToProps),
     myHandlers,
     onComponentDidMount,

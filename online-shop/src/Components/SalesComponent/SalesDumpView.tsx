@@ -17,7 +17,7 @@ export const SalesDumpView: React.FC<SalesViewComponentState> = (props: SalesVie
                     <SalesTabBuilder {...props}/>
                 </div>
                 
-                <HighchartsReact highcharts={Highcharts} title={"Sales Chart"} options={getChartDataByType(props, props.selectedChart)} />
+                <HighchartsReact key={props.selectedChart} highcharts={Highcharts} title={"Sales Chart"} options={getChartDataByType(props, props.selectedChart)} />
             </div>
         );
     }

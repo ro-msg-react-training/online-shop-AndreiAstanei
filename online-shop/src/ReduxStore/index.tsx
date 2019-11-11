@@ -9,10 +9,10 @@ import { EditProductPageState } from './EditProductPageSection/types';
 import { editProductPageReducer } from './EditProductPageSection/reducers';
 import { NewProductState } from './NewProductSection/types';
 import { newProductReducer } from "./NewProductSection/reducers";
-import { AppComponentState } from './AppComponentSection/types';
-import { appComponentReducer } from './AppComponentSection/reducers';
 import { SalesViewState } from './SalesViewSection/types';
 import { salesViewReducer } from './SalesViewSection/reducers';
+import { LoginComponentState } from './LoginComponentSection/types';
+import { loginReducer } from './LoginComponentSection/reducers';
 
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../Sagas/saga';
@@ -23,8 +23,8 @@ export interface AppState {
     cartReducer : ShoppingCartState;
     editProductReducer : EditProductPageState;
     newProdReducer : NewProductState;
-    appReducer : AppComponentState;
     salesReducer : SalesViewState;
+    loginReducer : LoginComponentState;
 }
 
 const rootReducer = combineReducers({
@@ -33,8 +33,8 @@ const rootReducer = combineReducers({
     cartReducer : shoppingCartReducer,
     editProductReducer : editProductPageReducer,
     newProdReducer : newProductReducer,
-    appReducer : appComponentReducer,
-    salesReducer : salesViewReducer
+    salesReducer : salesViewReducer,
+    loginReducer : loginReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();

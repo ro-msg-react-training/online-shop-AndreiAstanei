@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../Styles/ComponentsStyles/ShoppingCartStyles.scss';
 import { IProduct, CheckoutArrayItem } from '../../Models/Models';
-import { ProductsImages } from '../../Models/Models';
 import { AppState } from '../../ReduxStore';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -74,7 +73,7 @@ class ShoppingCart extends React.Component<ShoppingCartProps> {
             <div className="columns box is-vcentered has-text-centered">
               <div className="column">
                 <Link to={`/products/${product.id}`}>
-                  <img src={ProductsImages[product.id] ? ProductsImages[product.id].imageUrl : "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png"} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
+                  <img src={/* ProductsImages[product.id] ? ProductsImages[product.id].imageUrl : */"https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-1150x647.png"} className="imageForShoppingCartProducts ProductsListImages" alt={product.category + " " + product.id} />
                 </Link>
               </div>
               <div className="column">

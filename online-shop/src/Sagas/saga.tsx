@@ -5,12 +5,14 @@ import * as NPTypes from '../ReduxStore/NewProductSection/types';
 import * as EPTypes from '../ReduxStore/EditProductPageSection/types';
 import * as SCTypes from '../ReduxStore/ShoppingCartSection/types';
 import * as SVTypes from '../ReduxStore/SalesViewSection/types';
+import * as LCTypes from '../ReduxStore/LoginComponentSection/types';
 import { performLoadSalesCallToServer } from './SalesViewSaga/ManageSalesViewSagaCalls';
 import { performLoadProductDetailsForEdit, performSaveChangesForProductEdit } from './EditProductSaga/ManageEditProductSagaCalls';
 import { performProductListLoad } from './ProductListSaga/ManageProductListSagaCalls';
 import { performProductDetailsLoadData, performProductDeleteApiCall } from './ProductDetailsSaga/ManageProductDetailsSagaCalls';
 import { performNewProductRequest } from './NewProductSaga/ManageNewProductSagaCalls';
 import { performCheckoutCallToServer } from './ShoppingCartSaga/ManageShoppingCartSagaCalls';
+import { performLoginRequest } from './LoginSaga/ManageLoginSagaCalls';
 
 function* watchProductListEvents() {
   yield takeLatest(PLTypes.LOAD_PRODUCTS, performProductListLoad)
@@ -38,6 +40,10 @@ function* watchSalesViewEvents() {
   yield takeLatest(SVTypes.LOAD_SALES, performLoadSalesCallToServer);
 }
 
+function* watchLoginViewEvents() {
+  yield takeLatest(LCTypes.LOGIN_USER, performLoginRequest);
+}
+
 export default function* rootSaga() {
   yield all([
     watchProductListEvents(),
@@ -45,6 +51,7 @@ export default function* rootSaga() {
     watchNewProductsEvents(),
     watchProductEditEvents(),
     watchShoppingCartEvents(),
-    watchSalesViewEvents()
+    watchSalesViewEvents(),
+    watchLoginViewEvents()
   ])
 }

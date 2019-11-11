@@ -5,11 +5,7 @@ import { EditProductPageProps } from './EditProductSmartView';
 import { ActionStatusReport } from '../../HelperComponents/ActionStatusReport';
 
 export const EditProductDumpView: React.FC<EditProductPageProps> = (props: EditProductPageProps) => {
-    if (props.isLoading && props.submitChangesResponse === 0) {
-        return (
-            <div className="container is-vcentered">Loading product details...</div>
-        );
-    } else if (!props.isLoading) {
+    if (!props.isLoading) {
         if (props.submitChangesResponse === 0) {
             return (
                 <div className='container box is-family-primary'>
