@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+.imageForShoppingCartProducts {
+    width: 190px;
+    height: 150px;
+
+    object-fit: contain;
+  }
+
+.ShoppingCartProducts {
+    margin-bottom: 1.25rem;
+}
+
+#shoppingCartPriceTag {
+  margin-right: 10px;
+}
+
+@import '../AppStyles/App.sass';

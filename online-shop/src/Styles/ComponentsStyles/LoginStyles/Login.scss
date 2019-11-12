@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+#LoginDisplay {
+    max-width: 40%;
+}
+
+#loginImage {
+    max-width: 400px;
+    max-height: 4000px;
+    object-fit: contain;
+    margin: auto;
+}
+
+ @import '../AppStyles/App.sass';

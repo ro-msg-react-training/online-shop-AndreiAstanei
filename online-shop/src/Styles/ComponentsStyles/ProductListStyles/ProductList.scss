@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+.ProductsListElements {
+    margin: 0.25rem;
+    max-width: 255px;
+    max-height: 335px;
+}
+
+.ProductsListImages {
+    width: 230px;
+    height: 230px;
+
+    object-fit: contain;
+  }
+
+  .appliedEllipsisEffect {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+  }
+
+  #addButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+  }
+
+@import '../AppStyles/App.sass';

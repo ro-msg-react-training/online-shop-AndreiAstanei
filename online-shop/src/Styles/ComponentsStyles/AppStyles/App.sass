@@ -1,0 +1,38 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
+// Set your brand colors
+$purple: #8a4d76;
+$pink: #fa7c91;
+$brown: #757763;
+$beige-light: #d0d1cd;
+$beige-lighter: #eff0eb;
+$msg-red: #a01441;
+
+// Update Bulma's global variables
+$family-sans-serif: 'Open Sans';
+$grey-dark: $brown;
+$grey-light: $beige-light;
+$primary: $msg-red;
+$link: $pink;
+$widescreen-enabled: false;
+$fullhd-enabled: false;
+
+// Update some of Bulma's component variables
+//$body-background-color: $beige-lighter;
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+
+$body-font-size: 14px;
+
+// My custom color
+$myPriceColor: #ebbd34;
+$myPriceColor-invert: findColorInvert($myPriceColor);
+$custom-colors: ("price-color": ($myPriceColor, $myPriceColor-invert));
+
+// Import only what you need from Bulma
+@import 'node_modules/bulma/bulma.sass';
+@import 'node_modules/bulma-pageloader/src/sass/index.sass';
